@@ -1,0 +1,55 @@
+---
+---
+
+<section id="who-we-are" class="py-24 bg-white">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Section header -->
+    <div class="text-center mb-16">
+      <span class="inline-block mb-3 px-4 py-1 rounded-full bg-primary-100 text-primary-700 text-sm font-semibold uppercase tracking-wide">
+        Who We Are
+      </span>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">
+        A Community Rooted in Possibility
+      </h2>
+      <p class="text-lg text-gray-500 max-w-2xl mx-auto">
+        We believe every student, regardless of background, deserves a chance to understand and shape the AI-driven future.
+      </p>
+    </div>
+
+    <!-- Content grid -->
+    <div class="grid md:grid-cols-2 gap-12 items-center">
+      <!-- Text -->
+      <div class="space-y-6 text-gray-600 leading-relaxed">
+        <p class="text-lg">
+          <strong class="text-gray-900">InspireSaplingAI</strong> is a volunteer-driven non-profit
+          founded by educators, researchers, and technologists who share a single conviction:
+          <em>AI literacy is a civic necessity</em>, not a luxury.
+        </p>
+        <p>
+          We develop open-access curricula, host community workshops, and mentor young learners
+          from underrepresented backgrounds — giving them the tools to engage critically and
+          creatively with artificial intelligence.
+        </p>
+        <p>
+          Like a sapling, every mind we reach has the potential to grow into something that shapes
+          the world around it. Our job is to provide the sunlight, water, and soil.
+        </p>
+      </div>
+
+      <!-- Stats / highlights -->
+      <div class="grid grid-cols-2 gap-6">
+        {[
+          { number: '500+', label: 'Students Reached' },
+          { number: '20+', label: 'Volunteer Educators' },
+          { number: '10+', label: 'Free Workshops' },
+          { number: '100%', label: 'Open Access Curriculum' },
+        ].map(({ number, label }) => (
+          <div class="bg-gradient-to-br from-primary-50 to-white rounded-2xl p-6 text-center border border-primary-100 shadow-sm">
+            <p class="text-3xl font-extrabold text-primary-600 mb-1">{number}</p>
+            <p class="text-sm font-medium text-gray-500">{label}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
