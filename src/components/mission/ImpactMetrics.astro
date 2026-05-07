@@ -1,0 +1,71 @@
+---
+interface Metric {
+  number: string;
+  suffix: string;
+  label: string;
+  description?: string;
+}
+interface Props {
+  headline: string;
+  subtext: string;
+  metrics: Metric[];
+}
+const { headline, subtext, metrics } = Astro.props;
+---
+
+<section class="py-20 bg-gradient-to-br from-primary-600 to-secondary-700">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-14">
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">{headline}</h2>
+      <p class="text-lg text-white/70">{subtext}</p>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {metrics.map((m) => (
+        <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center border border-white/20 hover:bg-white/15 transition-all">
+          <p
+            class="text-4xl sm:text-5xl font-extrabold text-white mb-1 metric-counter"
+            data-target={m.number}
+            data-suffix={m.suffix}
+          >
+            0{m.suffix}
+          </p>
+          <p class="text-sm font-bold text-white/90 mb-2 uppercase tracking-wide">{m.label}</p>
+          {m.description && (
+            <p class="text-xs text-white/60 leading-relaxed">{m.description}</p>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  function animateCounters() {
+    const counters = document.querySelectorAll<HTMLElement>('.metric-counter');
+    counters.forEach(counter => {
+      const target = parseInt(counter.dataset.target ?? '0', 10);
+      const suffix = counter.dataset.suffix ?? '';
+      const duration = 1500;
+      const step = Math.ceil(target / (duration / 16));
+      let current = 0;
+      const timer = setInterval(() => {
+        current = Math.min(current + step, target);
+        counter.textContent = current + suffix;
+        if (current >= target) clearInterval(timer);
+      }, 16);
+    });
+  }
+
+  // Trigger when section enters viewport
+  const section = document.querySelector('.metric-counter')?.closest('section');
+  if (section) {
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) {
+        animateCounters();
+        observer.disconnect();
+      }
+    }, { threshold: 0.3 });
+    observer.observe(section);
+  }
+</script>

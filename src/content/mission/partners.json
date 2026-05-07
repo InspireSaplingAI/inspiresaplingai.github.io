@@ -1,0 +1,25 @@
+{"headline": "Partners & Supporters",
+    "subtext": "We are grateful to the organizations and individuals who believe in our mission. Partner logos will appear here as relationships are established.",
+    "partners": [
+        {
+            "name": "Your School or Organization",
+            "logo_placeholder": "Partner 1",
+            "url": "/#contact"
+        },
+        {
+            "name": "Become a Sponsor",
+            "logo_placeholder": "Partner 2",
+            "url": "/#contact"
+        },
+        {
+            "name": "Join as Institutional Partner",
+            "logo_placeholder": "Partner 3",
+            "url": "/#contact"
+        },
+        {
+            "name": "Support Our Mission",
+            "logo_placeholder": "Partner 4",
+            "url": "/#contact"
+        }
+    ]
+}

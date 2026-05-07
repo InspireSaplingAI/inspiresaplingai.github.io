@@ -1,0 +1,73 @@
+---
+interface Step {
+  number: string;
+  title: string;
+  description: string;
+}
+interface Props {
+  headline: string;
+  problemTitle: string;
+  problemBody: string;
+  theoryTitle: string;
+  steps: Step[];
+}
+const { headline, problemTitle, problemBody, theoryTitle, steps } = Astro.props;
+---
+
+<section class="py-20 bg-gray-50">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-14">
+      <span class="inline-block mb-3 px-4 py-1 rounded-full bg-red-100 text-red-600 text-sm font-semibold uppercase tracking-wide">
+        Why We Exist
+      </span>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900">{headline}</h2>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-12 items-start">
+      <!-- Problem -->
+      <div class="bg-white rounded-2xl p-8 border border-red-100 shadow-sm">
+        <div class="flex items-center gap-3 mb-5">
+          <span class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+            </svg>
+          </span>
+          <h3 class="text-xl font-bold text-gray-900">{problemTitle}</h3>
+        </div>
+        <p class="text-gray-600 leading-relaxed text-sm">{problemBody}</p>
+      </div>
+
+      <!-- Theory of Change -->
+      <div class="bg-white rounded-2xl p-8 border border-primary-100 shadow-sm">
+        <div class="flex items-center gap-3 mb-6">
+          <span class="w-10 h-10 rounded-full bg-primary-100 flex items-center justify-center flex-shrink-0">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </span>
+          <h3 class="text-xl font-bold text-gray-900">{theoryTitle}</h3>
+        </div>
+
+        <!-- Flow diagram -->
+        <ol class="relative">
+          {steps.map((step, i) => (
+            <li class="relative flex gap-4 pb-6 last:pb-0">
+              <!-- Connector line -->
+              {i < steps.length - 1 && (
+                <div class="absolute left-4 top-8 w-0.5 h-full bg-primary-100" aria-hidden="true"></div>
+              )}
+              <!-- Number badge -->
+              <span class="flex-shrink-0 w-8 h-8 rounded-full bg-primary-600 text-white text-xs font-bold flex items-center justify-center z-10">
+                {step.number}
+              </span>
+              <div>
+                <p class="font-semibold text-gray-900 text-sm">{step.title}</p>
+                <p class="text-gray-500 text-xs leading-relaxed mt-0.5">{step.description}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </div>
+</section>

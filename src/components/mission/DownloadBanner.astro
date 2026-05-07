@@ -1,0 +1,39 @@
+---
+interface Props {
+  headline: string;
+  subtext: string;
+  primaryLabel: string;
+  secondaryLabel: string;
+  secondaryHref: string;
+}
+const { headline, subtext, primaryLabel, secondaryLabel, secondaryHref } = Astro.props;
+---
+
+<section class="py-20 bg-white print:hidden">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <div class="bg-gradient-to-br from-primary-50 to-secondary-50 rounded-3xl p-10 border border-primary-100 shadow-sm">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto mb-4 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+      <h2 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-3">{headline}</h2>
+      <p class="text-gray-500 max-w-lg mx-auto mb-8 text-sm leading-relaxed">{subtext}</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <button
+          id="download-pdf-btn-bottom"
+          class="px-8 py-4 rounded-full bg-primary-600 text-white font-semibold hover:bg-primary-700 transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+        >
+          {primaryLabel}
+        </button>
+        <a
+          href={secondaryHref}
+          class="px-8 py-4 rounded-full border-2 border-secondary-200 text-secondary-700 font-semibold hover:bg-secondary-50 hover:border-secondary-400 transition-all focus:outline-none focus:ring-2 focus:ring-secondary-500 focus:ring-offset-2"
+        >
+          {secondaryLabel}
+        </a>
+      </div>
+      <p class="mt-6 text-xs text-gray-400">
+        Document last updated: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long' })}
+      </p>
+    </div>
+  </div>
+</section>

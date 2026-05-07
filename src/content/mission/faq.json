@@ -1,0 +1,28 @@
+{"headline": "Frequently Asked Questions",
+    "faqs": [
+        {
+            "question": "Who can volunteer with InspireSaplingAI?",
+            "answer": "Anyone with a passion for education and AI is welcome — whether you're a student, educator, researcher, or industry professional. No prior teaching experience is required. We provide onboarding materials and support."
+        },
+        {
+            "question": "How do you ensure AI is used ethically in your programs?",
+            "answer": "All our curricula include dedicated modules on AI ethics, bias, and responsible use. We follow established frameworks such as UNESCO's AI Ethics Recommendations and involve diverse community voices in curriculum design."
+        },
+        {
+            "question": "Are your resources really free?",
+            "answer": "Yes. All curriculum materials, lesson plans, and workshop guides are released under a Creative Commons license (CC BY 4.0), meaning anyone can use, share, and adapt them — even for commercial purposes — with attribution."
+        },
+        {
+            "question": "How can a school or institution partner with you?",
+            "answer": "We welcome partnerships with K–12 schools, community colleges, and educational non-profits. Reach out via our Contact form and a team member will respond within 3 business days to discuss how we can collaborate."
+        },
+        {
+            "question": "Is InspireSaplingAI a registered non-profit?",
+            "answer": "We are in the process of formalizing our 501(c)(3) status. In the meantime, we operate as a volunteer-driven community organization. Updates on our registration status will be posted here and shared with all supporters."
+        },
+        {
+            "question": "How are donations used?",
+            "answer": "Donations fund workshop materials, curriculum development, speaker honorariums, and operational costs. We are committed to publishing an annual impact report detailing how every dollar is allocated."
+        }
+    ]
+}

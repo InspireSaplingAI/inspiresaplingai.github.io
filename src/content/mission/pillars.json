@@ -1,0 +1,25 @@
+{"headline": "The Four Pillars",
+    "subtext": "Our strategic areas of work — each a root that anchors the sapling.",
+    "items": [
+        {
+            "icon": "chart-bar",
+            "title": "AI & Education Research",
+            "description": "Analyze how AI transforms knowledge transmission and advocate for educational equity — publishing findings openly for the community."
+        },
+        {
+            "icon": "user-group",
+            "title": "Student Growth Center",
+            "description": "Deliver AI skills training, resume optimization, and job-seeking strategies tailored to an AI-powered economy — meeting students where they are."
+        },
+        {
+            "icon": "beaker",
+            "title": "Innovation Incubation Engine",
+            "description": "Identify new AI-enabled pathways and host innovation competitions that spark creativity, rewarding bold ideas from underrepresented voices."
+        },
+        {
+            "icon": "star",
+            "title": "Community Endorsement Program",
+            "description": "Invite industry experts and distinguished speakers for lectures and project evaluations, raising the professional credibility of student work."
+        }
+    ]
+}

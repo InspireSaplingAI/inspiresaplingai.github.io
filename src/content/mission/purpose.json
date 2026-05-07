@@ -1,0 +1,25 @@
+{"headline": "Our Core Purpose",
+    "subtext": "Four guiding commitments that shape everything we do.",
+    "items": [
+        {
+            "icon": "lightbulb",
+            "title": "Education Insight",
+            "description": "We research and discuss the profound impact of artificial intelligence on modern education systems — surfacing evidence-based insights for educators, policymakers, and families."
+        },
+        {
+            "icon": "academic-cap",
+            "title": "Student Empowerment",
+            "description": "We equip students with practical AI tools and frameworks, strengthening both their academic performance and long-term career competitiveness in an AI-driven world."
+        },
+        {
+            "icon": "rocket",
+            "title": "Innovation Discovery",
+            "description": "We guide learners to spot emerging opportunities in the AI landscape, cultivating a '0 to 1' mindset that transforms curiosity into creation."
+        },
+        {
+            "icon": "link",
+            "title": "Resource Bridge",
+            "description": "We connect schools with industry through competitions, guest lectures, and mentorship — turning theoretical knowledge into real-world capability."
+        }
+    ]
+}

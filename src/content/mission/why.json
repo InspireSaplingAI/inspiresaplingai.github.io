@@ -1,0 +1,32 @@
+{"headline": "Why We Exist",
+    "problem_title": "The Problem",
+    "problem_body": "AI is reshaping every sector of society at an unprecedented pace. Yet access to meaningful AI education remains deeply unequal. Most schools lack trained educators. Existing resources are expensive or inaccessible. Students from low-income and minority communities are disproportionately left out — at risk of becoming passive consumers of AI rather than informed, empowered participants.",
+    "theory_title": "Our Theory of Change",
+    "steps": [
+        {
+            "number": "01",
+            "title": "Open Curriculum",
+            "description": "We create free, standards-aligned AI learning materials licensed for any school to use."
+        },
+        {
+            "number": "02",
+            "title": "Community Workshops",
+            "description": "Volunteers deliver hands-on sessions directly in under-resourced communities."
+        },
+        {
+            "number": "03",
+            "title": "Mentorship & Networks",
+            "description": "Students connect with AI professionals from diverse backgrounds for guidance and opportunity."
+        },
+        {
+            "number": "04",
+            "title": "Policy Advocacy",
+            "description": "We champion equitable AI literacy policies at district and state levels."
+        },
+        {
+            "number": "05",
+            "title": "Lasting Impact",
+            "description": "Informed, confident students enter the workforce ready to shape — not just use — AI."
+        }
+    ]
+}

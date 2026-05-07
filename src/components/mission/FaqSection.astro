@@ -1,0 +1,63 @@
+---
+interface Faq {
+  question: string;
+  answer: string;
+}
+interface Props {
+  headline: string;
+  faqs: Faq[];
+}
+const { headline, faqs } = Astro.props;
+---
+
+<section class="py-20 bg-white">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <span class="inline-block mb-3 px-4 py-1 rounded-full bg-secondary-100 text-secondary-700 text-sm font-semibold uppercase tracking-wide">
+        FAQ
+      </span>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900">{headline}</h2>
+    </div>
+
+    <div class="space-y-3" id="faq-list">
+      {faqs.map((faq, i) => (
+        <div class="border border-gray-200 rounded-2xl overflow-hidden">
+          <button
+            class="faq-trigger w-full flex items-center justify-between gap-4 px-6 py-5 text-left hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
+            aria-expanded="false"
+            aria-controls={`faq-answer-${i}`}
+            id={`faq-btn-${i}`}
+          >
+            <span class="font-semibold text-gray-900 text-sm sm:text-base">{faq.question}</span>
+            <svg class="faq-chevron flex-shrink-0 h-5 w-5 text-gray-400 transition-transform duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          <div
+            id={`faq-answer-${i}`}
+            role="region"
+            aria-labelledby={`faq-btn-${i}`}
+            class="faq-answer hidden px-6 pb-5"
+          >
+            <p class="text-gray-600 text-sm leading-relaxed">{faq.answer}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('.faq-trigger').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      const answerId = btn.getAttribute('aria-controls');
+      const answer = answerId ? document.getElementById(answerId) : null;
+      const chevron = btn.querySelector('.faq-chevron');
+
+      btn.setAttribute('aria-expanded', String(!expanded));
+      answer?.classList.toggle('hidden', expanded);
+      chevron?.classList.toggle('rotate-180', !expanded);
+    });
+  });
+</script>

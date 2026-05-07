@@ -1,0 +1,21 @@
+---
+interface Props {
+  headline: string;
+  subtext: string;
+}
+const { headline, subtext } = Astro.props;
+---
+
+<section class="py-20 bg-white">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="border-l-4 border-primary-500 pl-8 py-2">
+      <p class="text-xs font-bold uppercase tracking-widest text-primary-600 mb-4">Vision</p>
+      <blockquote class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900 leading-snug mb-6">
+        "{headline}"
+      </blockquote>
+      <p class="text-lg text-gray-500 leading-relaxed max-w-3xl">
+        {subtext}
+      </p>
+    </div>
+  </div>
+</section>

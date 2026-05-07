@@ -1,0 +1,125 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import MissionHero from '../components/mission/MissionHero.astro';
+import VisionStatement from '../components/mission/VisionStatement.astro';
+import CorePurpose from '../components/mission/CorePurpose.astro';
+import FourPillars from '../components/mission/FourPillars.astro';
+import WhyWeExist from '../components/mission/WhyWeExist.astro';
+import ImpactMetrics from '../components/mission/ImpactMetrics.astro';
+import FaqSection from '../components/mission/FaqSection.astro';
+import PartnerLogos from '../components/mission/PartnerLogos.astro';
+import DownloadBanner from '../components/mission/DownloadBanner.astro';
+
+import { getEntry } from 'astro:content';
+
+const vision   = await getEntry('mission', 'vision');
+const purpose  = await getEntry('mission', 'purpose');
+const pillars  = await getEntry('mission', 'pillars');
+const why      = await getEntry('mission', 'why');
+const impact   = await getEntry('mission', 'impact');
+const faq      = await getEntry('mission', 'faq');
+const cta      = await getEntry('mission', 'cta');
+const partners = await getEntry('mission', 'partners');
+---
+
+<Layout
+  title="Mission & Purpose — InspireSaplingAI"
+  description="Learn about InspireSaplingAI's vision, core purpose, four strategic pillars, and theory of change for AI education equity."
+>
+  <Navbar />
+
+  <!-- Printable area (captured by PDF generator) -->
+  <div id="mission-content">
+    <MissionHero
+      headline={vision!.data.headline!}
+      subtext={vision!.data.subtext!}
+      heroImageAlt={vision!.data.hero_image_alt!}
+      videoId={vision!.data.video_id!}
+    />
+
+    <VisionStatement
+      headline={vision!.data.headline!}
+      subtext={vision!.data.subtext!}
+    />
+
+    <CorePurpose
+      headline={purpose!.data.headline!}
+      subtext={purpose!.data.subtext!}
+      items={purpose!.data.items!}
+    />
+
+    <FourPillars
+      headline={pillars!.data.headline!}
+      subtext={pillars!.data.subtext!}
+      items={pillars!.data.items!}
+    />
+
+    <WhyWeExist
+      headline={why!.data.headline!}
+      problemTitle={why!.data.problem_title!}
+      problemBody={why!.data.problem_body!}
+      theoryTitle={why!.data.theory_title!}
+      steps={why!.data.steps!}
+    />
+
+    <ImpactMetrics
+      headline={impact!.data.headline!}
+      subtext={impact!.data.subtext!}
+      metrics={impact!.data.metrics!}
+    />
+
+    <FaqSection
+      headline={faq!.data.headline!}
+      faqs={faq!.data.faqs!}
+    />
+
+    <PartnerLogos
+      headline={partners!.data.headline!}
+      subtext={partners!.data.subtext!}
+      partners={partners!.data.partners!}
+    />
+
+    <DownloadBanner
+      headline={cta!.data.headline!}
+      subtext={cta!.data.subtext!}
+      primaryLabel={cta!.data.primary_label!}
+      secondaryLabel={cta!.data.secondary_label!}
+      secondaryHref={cta!.data.secondary_href!}
+    />
+  </div>
+
+  <Footer />
+</Layout>
+
+<!-- html2pdf.js for client-side PDF generation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" is:inline></script>
+
+<script>
+  function triggerPdfDownload() {
+    const element = document.getElementById('mission-content');
+    if (!element) return;
+
+    // Hide elements that shouldn't appear in the PDF
+    const hiddenEls = element.querySelectorAll<HTMLElement>('.print\\:hidden, #video-modal');
+    hiddenEls.forEach(el => { el.style.display = 'none'; });
+
+    const opt = {
+      margin:       [10, 10, 10, 10],
+      filename:     'InspireSaplingAI-Mission.pdf',
+      image:        { type: 'jpeg', quality: 0.92 },
+      html2canvas:  { scale: 2, useCORS: true, scrollY: 0 },
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] },
+    };
+
+    // @ts-ignore — html2pdf loaded via CDN
+    window.html2pdf().set(opt).from(element).save().then(() => {
+      hiddenEls.forEach(el => { el.style.display = ''; });
+    });
+  }
+
+  document.getElementById('download-pdf-btn')?.addEventListener('click', triggerPdfDownload);
+  document.getElementById('download-pdf-btn-bottom')?.addEventListener('click', triggerPdfDownload);
+</script>

@@ -1,0 +1,44 @@
+---
+interface PurposeItem {
+  icon: string;
+  title: string;
+  description: string;
+}
+interface Props {
+  headline: string;
+  subtext: string;
+  items: PurposeItem[];
+}
+const { headline, subtext, items } = Astro.props;
+
+const icons: Record<string, string> = {
+  lightbulb: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />`,
+  'academic-cap': `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />`,
+  rocket: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.82m5.84-2.56a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.82m2.56-5.84a14.98 14.98 0 00-12.12 6.16 14.98 14.98 0 008.41 9.63m5.96-5.96a14.926 14.926 0 012.58-5.84" />`,
+  link: `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />`,
+};
+---
+
+<section class="py-20 bg-gray-50">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-14">
+      <span class="inline-block mb-3 px-4 py-1 rounded-full bg-secondary-100 text-secondary-700 text-sm font-semibold uppercase tracking-wide">
+        Core Purpose
+      </span>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-4">{headline}</h2>
+      <p class="text-lg text-gray-500 max-w-2xl mx-auto">{subtext}</p>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {items.map((item, i) => (
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md hover:-translate-y-1 transition-all">
+          <div class={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 ${i % 2 === 0 ? 'bg-primary-100' : 'bg-secondary-100'}`}>
+            <svg xmlns="http://www.w3.org/2000/svg" class={`h-6 w-6 ${i % 2 === 0 ? 'text-primary-600' : 'text-secondary-600'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" set:html={icons[item.icon] ?? icons['lightbulb']} />
+          </div>
+          <h3 class="font-bold text-gray-900 mb-2 text-sm uppercase tracking-wide">{item.title}</h3>
+          <p class="text-sm text-gray-500 leading-relaxed">{item.description}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

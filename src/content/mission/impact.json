@@ -1,0 +1,29 @@
+{"headline": "Our Impact So Far",
+    "subtext": "Small numbers today. A forest tomorrow.",
+    "metrics": [
+        {
+            "number": "500",
+            "suffix": "+",
+            "label": "Students Reached",
+            "description": "Across workshops, online resources, and mentorship sessions"
+        },
+        {
+            "number": "20",
+            "suffix": "+",
+            "label": "Volunteer Educators",
+            "description": "Professionals and researchers giving their time"
+        },
+        {
+            "number": "10",
+            "suffix": "+",
+            "label": "Free Workshops",
+            "description": "Delivered in under-resourced schools and communities"
+        },
+        {
+            "number": "100",
+            "suffix": "%",
+            "label": "Open Access Curriculum",
+            "description": "All learning materials freely available to any educator"
+        }
+    ]
+}
