@@ -1,0 +1,146 @@
+---
+interface EventData {
+  title: string;
+  type: string;
+  mode: string;
+  date: string;
+  time?: string;
+  location?: string;
+  description: string;
+  external_url?: string;
+  status: string;
+  registration_required?: boolean;
+  tags?: string[];
+}
+
+interface Props {
+  event: EventData;
+}
+
+const { event } = Astro.props;
+
+const typeColors: Record<string, string> = {
+  workshop: 'bg-blue-100 text-blue-700',
+  competition: 'bg-purple-100 text-purple-700',
+  lecture: 'bg-emerald-100 text-emerald-700',
+  seminar: 'bg-orange-100 text-orange-700',
+  webinar: 'bg-teal-100 text-teal-700',
+};
+
+const modeConfig: Record<string, { classes: string; icon: string; label: string }> = {
+  online: { classes: 'bg-sky-100 text-sky-700', icon: '🌐', label: 'Online' },
+  offline: { classes: 'bg-amber-100 text-amber-700', icon: '📍', label: 'In-Person' },
+  hybrid: { classes: 'bg-violet-100 text-violet-700', icon: '🔄', label: 'Hybrid' },
+};
+
+const typeColor = typeColors[event.type] ?? 'bg-gray-100 text-gray-600';
+const mc = modeConfig[event.mode] ?? { classes: 'bg-gray-100 text-gray-600', icon: '', label: event.mode };
+const isPast = event.status === 'past';
+
+// Parse date safely (avoid timezone shift by appending T00:00:00)
+const dateObj = new Date(event.date + 'T00:00:00');
+const monthShort = dateObj.toLocaleDateString('en-US', { month: 'short' });
+const dayNum = dateObj.getDate();
+const yearNum = dateObj.getFullYear();
+---
+
+<article class={`bg-white rounded-2xl border flex flex-col transition-all duration-200 ${isPast ? 'border-gray-100 opacity-70' : 'border-gray-200 shadow-sm hover:shadow-md hover:-translate-y-0.5'}`}>
+  <div class="p-6 flex flex-col flex-1">
+    <!-- Date block + badges row -->
+    <div class="flex items-start gap-4 mb-4">
+      <!-- Calendar date pill -->
+      <div class="flex-shrink-0 text-center bg-gray-50 rounded-xl px-3 py-2 min-w-[56px]">
+        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{monthShort}</p>
+        <p class="text-2xl font-extrabold text-gray-900 leading-tight">{dayNum}</p>
+        <p class="text-[10px] text-gray-400">{yearNum}</p>
+      </div>
+
+      <!-- Badges + time -->
+      <div class="flex flex-col gap-1.5 flex-1 min-w-0">
+        <div class="flex flex-wrap gap-1.5">
+          <span class={`px-2.5 py-0.5 rounded-full text-xs font-semibold capitalize ${typeColor}`}>
+            {event.type}
+          </span>
+          <span class={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${mc.classes}`}>
+            {mc.icon} {mc.label}
+          </span>
+          {isPast && (
+            <span class="px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-400">
+              Past
+            </span>
+          )}
+        </div>
+        {event.time && (
+          <p class="text-xs text-gray-400">{event.time}</p>
+        )}
+      </div>
+    </div>
+
+    <!-- Title -->
+    <h3 class="font-bold text-gray-900 text-base leading-snug mb-2">{event.title}</h3>
+
+    <!-- Location -->
+    {event.location && (
+      <p class="text-xs text-gray-400 mb-3 flex items-center gap-1">
+        <svg class="h-3.5 w-3.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+        {event.location}
+      </p>
+    )}
+
+    <!-- Description -->
+    <p class="text-sm text-gray-500 leading-relaxed flex-1 mb-5">{event.description}</p>
+
+    <!-- CTA -->
+    {isPast ? (
+      event.external_url ? (
+        <a
+          href={event.external_url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gray-100 text-gray-600 text-sm font-semibold hover:bg-gray-200 transition-colors"
+        >
+          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          View Recording
+        </a>
+      ) : (
+        <span class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl bg-gray-50 text-gray-400 text-sm font-medium border border-gray-100 cursor-default">
+          Event Ended
+        </span>
+      )
+    ) : (
+      <div>
+        {event.external_url ? (
+          <a
+            href={event.external_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl bg-primary-600 text-white text-sm font-semibold hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+          >
+            Register Now
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+        ) : (
+          <button
+            disabled
+            class="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl bg-primary-50 text-primary-300 text-sm font-semibold cursor-not-allowed border border-primary-100"
+          >
+            Registration Opening Soon
+          </button>
+        )}
+        {event.registration_required && (
+          <p class="text-center text-xs text-gray-400 mt-2">
+            🔒 Full member registration coming in Phase 4
+          </p>
+        )}
+      </div>
+    )}
+  </div>
+</article>

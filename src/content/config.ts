@@ -1,5 +1,42 @@
 import { defineCollection, z } from 'astro:content';
 
+// ── Resources (markdown files, supports article body rendering) ────────────
+const resources = defineCollection({
+    type: 'content',
+    schema: z.object({
+        title: z.string(),
+        level: z.enum(['beginner', 'advanced']),
+        type: z.enum(['article', 'link', 'video']),
+        description: z.string(),
+        url: z.string().optional(),
+        youtube_id: z.string().optional(),
+        tags: z.array(z.string()).default([]),
+        published_at: z.string(),
+        featured: z.boolean().optional(),
+        source: z.string().optional(),
+    }),
+});
+
+// ── Events (JSON files) ────────────────────────────────────────────────────
+const events = defineCollection({
+    type: 'data',
+    schema: z.object({
+        title: z.string(),
+        type: z.enum(['workshop', 'competition', 'lecture', 'seminar', 'webinar']),
+        mode: z.enum(['online', 'offline', 'hybrid']),
+        date: z.string(),
+        time: z.string().optional(),
+        location: z.string().optional(),
+        description: z.string(),
+        external_url: z.string().optional(),
+        status: z.enum(['upcoming', 'past']),
+        registration_required: z.boolean().optional(),
+        tags: z.array(z.string()).default([]),
+        image_alt: z.string().optional(),
+    }),
+});
+
+// ── Mission (JSON files, existing) ─────────────────────────────────────────
 const mission = defineCollection({
     type: 'data',
     schema: z.object({
@@ -44,4 +81,4 @@ const mission = defineCollection({
     }),
 });
 
-export const collections = { mission };
+export const collections = { mission, resources, events };

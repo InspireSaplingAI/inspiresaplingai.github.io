@@ -1,0 +1,114 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  resource: CollectionEntry<'resources'>;
+}
+
+const { resource } = Astro.props;
+const { title, level, type, description, url, youtube_id, tags, source } = resource.data;
+
+const levelConfig = {
+  beginner: { classes: 'bg-emerald-100 text-emerald-700', label: '🌱 Beginner' },
+  advanced: { classes: 'bg-indigo-100 text-indigo-700', label: '🔬 Advanced' },
+};
+
+const typeConfig = {
+  article: { label: 'Article', actionLabel: 'Read Article', icon: 'article' },
+  link: { label: 'External Link', actionLabel: 'Visit Resource', icon: 'link' },
+  video: { label: 'Video', actionLabel: 'Watch Video', icon: 'video' },
+};
+
+const lc = levelConfig[level];
+const tc = typeConfig[type];
+
+const href =
+  type === 'article'
+    ? `/resources/${resource.id.replace(/\.md$/, '')}`
+    : type === 'video' && youtube_id
+      ? `https://www.youtube.com/watch?v=${youtube_id}`
+      : url ?? '#';
+
+const isExternal = type !== 'article';
+const thumbnailSrc = type === 'video' && youtube_id
+  ? `https://img.youtube.com/vi/${youtube_id}/hqdefault.jpg`
+  : null;
+---
+
+<article
+  class="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 overflow-hidden flex flex-col"
+  data-level={level}
+  data-type={type}
+>
+  {thumbnailSrc && (
+    <a href={href} target="_blank" rel="noopener noreferrer" class="block relative aspect-video overflow-hidden bg-gray-100 flex-shrink-0">
+      <img
+        src={thumbnailSrc}
+        alt={title}
+        class="w-full h-full object-cover"
+        loading="lazy"
+      />
+      <div class="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/10 transition-colors">
+        <div class="w-14 h-14 rounded-full bg-red-600 flex items-center justify-center shadow-lg">
+          <svg class="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+        </div>
+      </div>
+    </a>
+  )}
+
+  <div class="p-6 flex flex-col flex-1">
+    <!-- Badges -->
+    <div class="flex flex-wrap gap-2 mb-3">
+      <span class={`px-2.5 py-0.5 rounded-full text-xs font-semibold ${lc.classes}`}>
+        {lc.label}
+      </span>
+      <span class="flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-500">
+        {type === 'article' && (
+          <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+        )}
+        {type === 'link' && (
+          <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+          </svg>
+        )}
+        {type === 'video' && (
+          <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        )}
+        {tc.label}
+      </span>
+    </div>
+
+    <h3 class="font-bold text-gray-900 text-base leading-snug mb-2">{title}</h3>
+    {source && <p class="text-xs text-gray-400 mb-2">Source: {source}</p>}
+    <p class="text-sm text-gray-500 leading-relaxed flex-1 mb-4">{description}</p>
+
+    {tags && tags.length > 0 && (
+      <div class="flex flex-wrap gap-1.5 mb-4">
+        {tags.map(tag => (
+          <span class="px-2 py-0.5 bg-gray-50 border border-gray-100 rounded-full text-xs text-gray-400">
+            #{tag}
+          </span>
+        ))}
+      </div>
+    )}
+
+    <a
+      href={href}
+      target={isExternal ? '_blank' : '_self'}
+      rel={isExternal ? 'noopener noreferrer' : undefined}
+      class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary-600 text-white text-sm font-semibold hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 mt-auto"
+    >
+      {tc.actionLabel}
+      <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+      </svg>
+    </a>
+  </div>
+</article>
