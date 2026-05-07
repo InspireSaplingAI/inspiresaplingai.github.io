@@ -30,9 +30,6 @@ const href =
       : url ?? '#';
 
 const isExternal = type !== 'article';
-const thumbnailSrc = type === 'video' && youtube_id
-  ? `https://img.youtube.com/vi/${youtube_id}/hqdefault.jpg`
-  : null;
 ---
 
 <article
@@ -40,20 +37,17 @@ const thumbnailSrc = type === 'video' && youtube_id
   data-level={level}
   data-type={type}
 >
-  {thumbnailSrc && (
-    <a href={href} target="_blank" rel="noopener noreferrer" class="block relative aspect-video overflow-hidden bg-gray-100 flex-shrink-0">
-      <img
-        src={thumbnailSrc}
-        alt={title}
-        class="w-full h-full object-cover"
-        loading="lazy"
-      />
-      <div class="absolute inset-0 flex items-center justify-center bg-black/30 hover:bg-black/10 transition-colors">
-        <div class="w-14 h-14 rounded-full bg-red-600 flex items-center justify-center shadow-lg">
+  {type === 'video' && youtube_id && (
+    <a href={href} target="_blank" rel="noopener noreferrer" class="block relative aspect-video overflow-hidden bg-gray-900 flex-shrink-0 group">
+      <!-- Static branded placeholder — avoids hotlinking third-party CDN thumbnails -->
+      <div class="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-gray-800 to-gray-900 text-white">
+        <div class="w-14 h-14 rounded-full bg-red-600 flex items-center justify-center shadow-lg mb-3 group-hover:scale-110 transition-transform">
           <svg class="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M8 5v14l11-7z"/>
           </svg>
         </div>
+        <p class="text-sm font-semibold text-gray-200">Watch on YouTube</p>
+        {source && <p class="text-xs text-gray-400 mt-1">{source}</p>}
       </div>
     </a>
   )}

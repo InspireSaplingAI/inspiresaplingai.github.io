@@ -16,11 +16,13 @@ Research consistently shows that AI systems trained predominantly on data from a
 
 ## What the Evidence Shows
 
-**Algorithmic bias in assessment:** A 2022 study in *Educational Researcher* (Mayfield et al.) found that automated essay scoring systems penalized non-standard English dialects and culturally specific references, even when the underlying reasoning was sound.
+> **Note:** The following summarizes patterns documented across the AI-in-education research literature. This is an editorial overview by InspireSaplingAI for educational purposes, not a peer-reviewed article. Readers seeking primary sources should consult databases such as Google Scholar, ERIC, or the Council of Europe's AI and education publications.
 
-**Personalized learning platforms:** A large-scale analysis of adaptive learning tools (Holmes et al., 2023) found significant variation in learning gains across income brackets — with students at under-resourced schools seeing smaller improvements, partly due to lower digital fluency and irregular access.
+**Algorithmic bias in assessment:** Multiple studies have documented that automated essay scoring systems can penalize non-standard English dialects and culturally specific references, even when the underlying reasoning is sound — disproportionately affecting multilingual and minority students.
 
-**Predictive analytics risks:** Early-warning systems designed to identify students at risk of dropping out have been shown to correlate dropout risk with poverty and race rather than true academic trajectory, potentially creating self-fulfilling prophecies.
+**Personalized learning platforms:** Analyses of adaptive learning tools have found variation in learning gains across income brackets, with students at under-resourced schools often seeing smaller improvements — partly attributed to lower baseline digital fluency and irregular device access.
+
+**Predictive analytics risks:** Early-warning systems designed to flag students at risk of dropping out have been criticized for correlating risk scores with poverty and race rather than capturing true academic trajectory, potentially creating self-fulfilling outcomes.
 
 ## Promising Interventions
 
@@ -37,6 +39,9 @@ Our curriculum development process explicitly centers communities that have hist
 
 ---
 
-**References:**
-- Mayfield, E. et al. (2022). *The Inequitable Effects of Automated Scoring on Diverse Student Writers.* Educational Researcher.
-- Holmes, W. et al. (2023). *Artificial Intelligence and Education: A Critical View Through the lens of Human Rights, Democracy and the Rule of Law.* Council of Europe.
+**Further Reading:**
+- [Council of Europe: AI and Education publications](https://www.coe.int/en/web/artificial-intelligence/education)
+- [ERIC database: AI fairness in education](https://eric.ed.gov/?q=AI+fairness+education)
+- [UNESCO: AI in Education](https://www.unesco.org/en/digital-education/artificial-intelligence)
+
+*This article was written by InspireSaplingAI staff as an educational overview. It does not constitute academic research.*
