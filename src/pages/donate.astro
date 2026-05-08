@@ -1,0 +1,121 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const impactItems = [
+  { icon: '🎓', label: 'Free AI workshops for students', detail: 'Covers venue, equipment, and materials' },
+  { icon: '📚', label: 'Open-access curriculum development', detail: 'Paying content creators and editors' },
+  { icon: '🌐', label: 'Platform hosting and AI API costs', detail: 'Servers, databases, and OpenAI usage' },
+  { icon: '🤝', label: 'Mentor stipends', detail: 'Fair compensation for 1-on-1 coaching time' },
+];
+---
+
+<Layout
+  title="Donate | InspireSaplingAI"
+  description="Support InspireSaplingAI's mission to make AI education free and accessible. One-time and recurring donations coming soon."
+>
+  <!-- Hero -->
+  <section class="bg-gradient-to-br from-emerald-900 via-emerald-800 to-indigo-900 pt-32 pb-20 px-4 text-white text-center">
+    <div class="max-w-3xl mx-auto">
+      <h1 class="text-4xl md:text-5xl font-extrabold mb-5 leading-tight">
+        Help a Sapling Grow 🌱
+      </h1>
+      <p class="text-xl text-emerald-100 max-w-2xl mx-auto leading-relaxed">
+        Every contribution — large or small — directly funds free AI education for students who need it most.
+      </p>
+    </div>
+  </section>
+
+  <div class="max-w-4xl mx-auto px-4 py-16 space-y-14">
+
+    <!-- Registration notice -->
+    <div class="flex items-start gap-4 p-5 bg-amber-50 border border-amber-200 rounded-2xl">
+      <div class="flex-shrink-0 w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 font-bold text-lg">!</div>
+      <div>
+        <p class="font-bold text-amber-800 mb-1">Non-profit registration in progress</p>
+        <p class="text-sm text-amber-700 leading-relaxed">
+          We are currently in the process of registering as a 501(c)(3) non-profit organization. Our donation portal will go live once registration is approved.
+          In the meantime, please <a href="/#contact" class="underline font-semibold hover:text-amber-900">contact us</a> if you would like to support us early.
+        </p>
+      </div>
+    </div>
+
+    <!-- Donation options (coming soon) -->
+    <section>
+      <h2 class="text-2xl font-extrabold text-gray-900 mb-6 text-center">Donation Options — Coming Soon</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <!-- One-time -->
+        <div class="bg-white rounded-2xl border-2 border-gray-100 p-8 relative overflow-hidden flex flex-col">
+          <span class="absolute top-4 right-4 px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-bold">🚧 Coming Soon</span>
+          <div class="text-3xl mb-3">💳</div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">One-Time Gift</h3>
+          <p class="text-gray-500 text-sm leading-relaxed flex-1 mb-6">
+            Make a single contribution of any amount. Every dollar goes directly toward our programs — no administrative overhead fees.
+          </p>
+          <button
+            disabled
+            class="w-full py-3 rounded-xl bg-gray-100 text-gray-400 text-sm font-bold cursor-not-allowed border border-gray-100"
+          >
+            Donate Once — Opening Soon
+          </button>
+        </div>
+
+        <!-- Monthly -->
+        <div class="bg-white rounded-2xl border-2 border-primary-100 p-8 relative overflow-hidden flex flex-col">
+          <span class="absolute top-4 right-4 px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-bold">🚧 Coming Soon</span>
+          <div class="text-3xl mb-3">🔄</div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Monthly Supporter</h3>
+          <p class="text-gray-500 text-sm leading-relaxed flex-1 mb-6">
+            Commit to a recurring monthly amount and become a sustaining member. Monthly supporters get priority access to events and a Supporter badge.
+          </p>
+          <button
+            disabled
+            class="w-full py-3 rounded-xl bg-gray-100 text-gray-400 text-sm font-bold cursor-not-allowed border border-gray-100"
+          >
+            Give Monthly — Opening Soon
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Impact breakdown -->
+    <section>
+      <h2 class="text-2xl font-extrabold text-gray-900 mb-6 text-center">Where Your Money Goes</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {impactItems.map(item => (
+          <div class="flex items-start gap-4 p-5 bg-gray-50 rounded-xl">
+            <span class="text-2xl flex-shrink-0">{item.icon}</span>
+            <div>
+              <p class="font-semibold text-gray-900 text-sm">{item.label}</p>
+              <p class="text-xs text-gray-500 mt-0.5">{item.detail}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      <p class="text-center text-xs text-gray-400 mt-4">
+        As a non-profit (pending), 100% of donations are used toward mission activities. No profit is distributed to individuals.
+      </p>
+    </section>
+
+    <!-- Interim CTA -->
+    <section class="bg-gradient-to-r from-emerald-600 to-indigo-600 rounded-3xl p-10 text-white text-center">
+      <h2 class="text-2xl font-extrabold mb-3">Interested in Supporting Us Now?</h2>
+      <p class="text-white/80 mb-7 leading-relaxed max-w-xl mx-auto">
+        Reach out directly via our contact form. We can discuss early sponsorship, in-kind contributions, or other ways to support our mission while we complete registration.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href="/#contact"
+          class="px-8 py-3.5 bg-white text-emerald-700 font-bold rounded-xl hover:bg-emerald-50 transition-colors shadow-lg"
+        >
+          Contact Us
+        </a>
+        <a
+          href="/membership"
+          class="px-8 py-3.5 bg-white/10 border border-white/30 text-white font-bold rounded-xl hover:bg-white/20 transition-colors"
+        >
+          Explore Membership
+        </a>
+      </div>
+    </section>
+  </div>
+</Layout>

@@ -1,0 +1,167 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const roles = [
+  {
+    icon: '\u270f\ufe0f',
+    title: 'Content Writer',
+    commitment: '3\u20135 hrs/week',
+    description: 'Write beginner and advanced AI explainer articles, edit resources, and help maintain curriculum accuracy.',
+    skills: ['Writing', 'AI knowledge', 'Research'],
+  },
+  {
+    icon: '\ud83d\udccb',
+    title: 'Event Organizer',
+    commitment: '5\u20138 hrs/event',
+    description: 'Plan and coordinate online/in-person workshops, competitions, and lectures \u2014 logistics, outreach, and follow-up.',
+    skills: ['Project management', 'Communication', 'Coordination'],
+  },
+  {
+    icon: '\ud83c\udf93',
+    title: 'Mentor / Coach',
+    commitment: '2\u20134 hrs/week',
+    description: 'Provide 1-on-1 coaching sessions on career, job search, resume review, or technical AI topics. Mentors receive a stipend.',
+    skills: ['Industry experience', 'Coaching', 'Patience'],
+    stipend: true,
+  },
+  {
+    icon: '\ud83d\udcbb',
+    title: 'Tech / Developer',
+    commitment: '4\u20138 hrs/week',
+    description: 'Contribute to the website, build new features, help with data pipelines, or maintain the platform infrastructure.',
+    skills: ['Web dev', 'Python/JS', 'GitHub'],
+  },
+  {
+    icon: '\ud83d\udce3',
+    title: 'Outreach & Partnerships',
+    commitment: '3\u20135 hrs/week',
+    description: 'Reach out to schools, community organizations, and companies to spread awareness and build partnerships.',
+    skills: ['Networking', 'Communication', 'Presentation'],
+  },
+];
+---
+
+<Layout
+  title="Volunteer | InspireSaplingAI"
+  description="Volunteer with InspireSaplingAI as a content writer, event organizer, mentor, developer, or outreach coordinator. Online application coming soon."
+>
+  <!-- Hero -->
+  <section class="bg-gradient-to-br from-emerald-900 via-emerald-800 to-indigo-900 pt-32 pb-20 px-4 text-white text-center">
+    <div class="max-w-3xl mx-auto">
+      <h1 class="text-4xl md:text-5xl font-extrabold mb-5 leading-tight">
+        Volunteer With Us
+      </h1>
+      <p class="text-xl text-emerald-100 max-w-2xl mx-auto leading-relaxed">
+        Help us make AI education free and accessible for everyone. There is a role for every skill set.
+      </p>
+    </div>
+  </section>
+
+  <div class="max-w-5xl mx-auto px-4 py-16 space-y-14">
+
+    <!-- Application notice -->
+    <div class="flex items-start gap-4 p-5 bg-amber-50 border border-amber-200 rounded-2xl">
+      <div class="flex-shrink-0 w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 font-bold text-lg">!</div>
+      <div>
+        <p class="font-bold text-amber-800 mb-1">Online application form coming in Phase 4G</p>
+        <p class="text-sm text-amber-700 leading-relaxed">
+          The volunteer portal is under development. In the meantime, please <a href="/#contact" class="underline font-semibold hover:text-amber-900">contact us</a> with your name, the role you are interested in, and a brief note about your background. We will respond within 3-5 business days.
+        </p>
+      </div>
+    </div>
+
+    <!-- Roles -->
+    <section>
+      <h2 class="text-2xl font-extrabold text-gray-900 mb-2">Open Volunteer Roles</h2>
+      <p class="text-gray-500 mb-8">All roles are remote-friendly unless noted otherwise.</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {roles.map(role => (
+          <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-7 flex flex-col">
+            <div class="flex items-start justify-between mb-3">
+              <div class="flex items-center gap-3">
+                <span class="text-3xl">{role.icon}</span>
+                <div>
+                  <h3 class="font-bold text-gray-900">{role.title}</h3>
+                  <p class="text-xs text-gray-400">{role.commitment}</p>
+                </div>
+              </div>
+              {role.stipend && (
+                <span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-bold flex-shrink-0">
+                  Stipend Paid
+                </span>
+              )}
+            </div>
+            <p class="text-sm text-gray-500 leading-relaxed flex-1 mb-4">{role.description}</p>
+            <div class="flex flex-wrap gap-1.5 mb-5">
+              {role.skills.map(skill => (
+                <span class="px-2 py-0.5 bg-gray-50 border border-gray-100 rounded-full text-xs text-gray-500">
+                  {skill}
+                </span>
+              ))}
+            </div>
+            <a
+              href="/#contact"
+              class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary-600 text-white text-sm font-semibold hover:bg-primary-700 transition-colors"
+            >
+              Apply via Contact Form
+            </a>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- What is being built -->
+    <section class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
+      <div class="flex items-center gap-3 mb-4">
+        <span class="text-2xl">\ud83d\udd28</span>
+        <h2 class="text-xl font-bold text-gray-900">Volunteer Portal - Phase 4G</h2>
+        <span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-700 text-xs font-bold">Coming Soon</span>
+      </div>
+      <ul class="space-y-3 text-sm text-gray-600">
+        {[
+          'Online application form with role selection and background upload',
+          'Application status tracking - see where you are in the review process',
+          'Volunteer dashboard: track hours, upcoming commitments, and impact',
+          'Admin panel for coordinators to review and approve applications',
+          'Automated email confirmation and onboarding materials',
+        ].map(item => (
+          <li class="flex items-start gap-2.5">
+            <svg class="h-4 w-4 text-primary-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            {item}
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    <!-- Why volunteer -->
+    <section class="bg-gradient-to-r from-emerald-600 to-indigo-600 rounded-3xl p-10 md:p-14 text-white text-center">
+      <h2 class="text-2xl md:text-3xl font-extrabold mb-4">Why Volunteer?</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8 text-left max-w-3xl mx-auto">
+        <div class="bg-white/10 rounded-2xl p-5">
+          <div class="text-3xl mb-2">\ud83c\udf31</div>
+          <h3 class="font-bold mb-1">Real Impact</h3>
+          <p class="text-sm text-white/80">Your work directly reaches students who otherwise could not access AI education.</p>
+        </div>
+        <div class="bg-white/10 rounded-2xl p-5">
+          <div class="text-3xl mb-2">\ud83d\udcbc</div>
+          <h3 class="font-bold mb-1">Grow Your Career</h3>
+          <p class="text-sm text-white/80">Build a portfolio, gain mentorship experience, and earn a reference letter.</p>
+        </div>
+        <div class="bg-white/10 rounded-2xl p-5">
+          <div class="text-3xl mb-2">\ud83e\udd1d</div>
+          <h3 class="font-bold mb-1">Great Community</h3>
+          <p class="text-sm text-white/80">Work alongside educators, engineers, and researchers who care about equity in AI.</p>
+        </div>
+      </div>
+      <a
+        href="/#contact"
+        class="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full bg-white text-primary-700 font-bold text-lg hover:bg-primary-50 transition-all shadow-lg"
+      >
+        Get in Touch
+      </a>
+    </section>
+
+  </div>
+</Layout>

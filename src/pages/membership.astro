@@ -1,0 +1,160 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const features = [
+  {
+    icon: '📅',
+    title: 'Event Registration',
+    description: 'Register for workshops, competitions, and lectures with one click. Receive calendar invites and reminders automatically.',
+    status: 'coming-soon',
+    tag: 'Phase 4B',
+  },
+  {
+    icon: '🤖',
+    title: 'AI Career Assistant',
+    description: 'Upload your resume, set your job target, and let AI find matching roles, identify skill gaps, and rewrite your CV for each application.',
+    status: 'coming-soon',
+    tag: 'Phase 4D',
+  },
+  {
+    icon: '🎓',
+    title: '1-on-1 Coaching',
+    description: 'Book paid sessions with vetted mentors from top tech companies — career advice, mock interviews, resume review, and job search strategy.',
+    status: 'coming-soon',
+    tag: 'Phase 4E',
+  },
+  {
+    icon: '💬',
+    title: 'Community Forum',
+    description: 'Discuss AI topics, share resources, find project partners, and get feedback from peers and mentors in a moderated environment.',
+    status: 'coming-soon',
+    tag: 'Phase 4F',
+  },
+  {
+    icon: '💚',
+    title: 'Donations',
+    description: 'Support our mission with one-time or recurring donations once our non-profit registration is complete. Every dollar funds free AI education.',
+    status: 'coming-soon',
+    tag: 'Phase 4C',
+  },
+  {
+    icon: '🙌',
+    title: 'Volunteer Portal',
+    description: 'Apply to volunteer as a content creator, event organizer, mentor, developer, or outreach coordinator. Manage your contributions in one place.',
+    status: 'coming-soon',
+    tag: 'Phase 4G',
+  },
+];
+
+const liveFeatures = [
+  { icon: '📚', label: 'Learning Resources', href: '/resources' },
+  { icon: '📅', label: 'Event Calendar', href: '/events' },
+  { icon: '🌱', label: 'Mission & Purpose', href: '/mission' },
+];
+---
+
+<Layout
+  title="Membership | InspireSaplingAI"
+  description="Join InspireSaplingAI as a member to access AI career tools, 1-on-1 coaching, community forums, and exclusive events. Platform launching soon."
+>
+  <!-- Hero -->
+  <section class="bg-gradient-to-br from-indigo-900 via-emerald-900 to-indigo-900 pt-32 pb-20 px-4 text-white text-center">
+    <div class="max-w-3xl mx-auto">
+      <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-400/20 text-amber-300 text-sm font-semibold mb-6 border border-amber-400/30">
+        <span class="inline-block w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+        Platform Under Development
+      </span>
+      <h1 class="text-4xl md:text-5xl font-extrabold mb-5 leading-tight">
+        Membership &amp; Platform Features
+      </h1>
+      <p class="text-xl text-indigo-100 max-w-2xl mx-auto leading-relaxed mb-8">
+        We're building a full membership platform to power AI education, career growth, and community. Free to join — advanced features launching soon.
+      </p>
+      <a
+        href="/#contact"
+        class="inline-flex items-center gap-2 px-8 py-3.5 bg-white text-indigo-700 font-bold rounded-xl hover:bg-indigo-50 transition-colors shadow-lg"
+      >
+        Get Notified at Launch
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- What's Live Now -->
+  <section class="bg-emerald-50 border-b border-emerald-100 py-10 px-4">
+    <div class="max-w-4xl mx-auto">
+      <p class="text-center text-sm font-semibold text-emerald-700 uppercase tracking-wide mb-6">Available Right Now — Free &amp; No Login Required</p>
+      <div class="flex flex-wrap justify-center gap-4">
+        {liveFeatures.map(f => (
+          <a
+            href={f.href}
+            class="flex items-center gap-2.5 px-5 py-2.5 bg-white border border-emerald-200 rounded-xl text-sm font-semibold text-emerald-700 hover:border-emerald-400 hover:shadow-sm transition-all"
+          >
+            <span>{f.icon}</span>
+            {f.label}
+            <svg class="h-3.5 w-3.5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Coming Soon Features -->
+  <section class="max-w-7xl mx-auto px-4 py-20">
+    <div class="text-center mb-14">
+      <h2 class="text-3xl font-extrabold text-gray-900 mb-3">Coming Soon</h2>
+      <p class="text-gray-500 text-lg max-w-xl mx-auto">
+        These features are actively being designed and built. Register your interest and we'll notify you at launch.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      {features.map(feature => (
+        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-7 flex flex-col relative overflow-hidden">
+          <!-- Coming soon ribbon -->
+          <div class="absolute top-4 right-4">
+            <span class="px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-bold">
+              🚧 {feature.tag}
+            </span>
+          </div>
+
+          <div class="text-4xl mb-4">{feature.icon}</div>
+          <h3 class="text-lg font-bold text-gray-900 mb-2 pr-20">{feature.title}</h3>
+          <p class="text-sm text-gray-500 leading-relaxed flex-1">{feature.description}</p>
+
+          <div class="mt-5 pt-4 border-t border-gray-50">
+            <a
+              href="/#contact"
+              class="text-sm font-semibold text-primary-600 hover:text-primary-700 flex items-center gap-1 transition-colors"
+            >
+              Notify me when ready
+              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- Membership is free CTA -->
+  <section class="bg-gradient-to-r from-emerald-600 to-indigo-600 py-16 px-4 text-white text-center">
+    <div class="max-w-2xl mx-auto">
+      <h2 class="text-2xl md:text-3xl font-extrabold mb-3">Membership is Free</h2>
+      <p class="text-white/80 text-lg mb-8 leading-relaxed">
+        A free account will unlock event registration, AI career tools (limited), and community access. Advanced coaching is fee-based to fairly compensate mentors' time.
+      </p>
+      <a
+        href="/#contact"
+        class="inline-flex items-center gap-2 px-8 py-3.5 bg-white text-emerald-700 font-bold rounded-xl hover:bg-emerald-50 transition-colors shadow-lg"
+      >
+        Get Early Access
+      </a>
+    </div>
+  </section>
+</Layout>
