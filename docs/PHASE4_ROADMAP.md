@@ -14,7 +14,7 @@
 1. [Pre-flight Checklist — Manual Account Setup](#1-pre-flight-checklist--manual-account-setup)
 2. [Tech Stack Reference](#2-tech-stack-reference)
 3. [Cost Reference](#3-cost-reference)
-4. [Phase 4A — Foundation: Vercel + Supabase Auth](#4-phase-4a--foundation-vercel--supabase-auth)
+4. [Phase 4A — Foundation: Cloudflare Pages + Supabase Auth](#4-phase-4a--foundation-cloudflare-pages--supabase-auth)
 5. [Phase 4B — Event Registration](#5-phase-4b--event-registration)
 6. [Phase 4C — Donations (Donorbox)](#6-phase-4c--donations-donorbox)
 7. [Phase 4D — AI Career Assistant](#7-phase-4d--ai-career-assistant)
@@ -32,13 +32,14 @@
 > **All items in this section are 👤 MANUAL — must be done by the org owner before any code is written for Phase 4A.**
 > Agent cannot complete these steps. They require human login, form submission, or payment.
 
-### 1.1 Vercel (required for Phase 4A)
-- [ ] Go to [vercel.com](https://vercel.com) → Sign up with GitHub account
-- [ ] Click **Add New Project** → Import `InspireSaplingAI/inspiresaplingai.github.io`
-- [ ] Framework preset: **Astro** (Vercel detects automatically)
-- [ ] Leave build settings as-is, click **Deploy** — first deploy will succeed (static mode still works)
-- [ ] After agent adds `@astrojs/vercel` adapter: Vercel redeploys automatically on every `git push main`
-- [ ] **Disable GitHub Pages** after confirming Vercel deploy works (repo Settings → Pages → Source → None)
+### 1.1 Cloudflare Pages (required for Phase 4A)
+- [ ] Go to [cloudflare.com](https://cloudflare.com) → Sign up / log in (free — no commercial use restrictions)
+- [ ] Go to **Workers & Pages** → **Create** → **Pages** → **Connect to Git**
+- [ ] Select the `InspireSaplingAI/inspiresaplingai.github.io` repository
+- [ ] Framework preset: **Astro** (auto-detected); build command `npm run build`, output directory `dist`
+- [ ] Click **Save and Deploy** — first deploy succeeds (static mode still works)
+- [ ] After agent adds `@astrojs/cloudflare` adapter: Cloudflare redeploys automatically on every `git push main`
+- [ ] **Disable GitHub Pages** after confirming Cloudflare deploy works (repo Settings → Pages → Source → None)
 
 ### 1.2 Supabase (required for Phase 4A)
 - [ ] Go to [supabase.com](https://supabase.com) → Sign up (free)
@@ -48,37 +49,37 @@
   - `SUPABASE_URL` (looks like `https://xxxxx.supabase.co`)
   - `SUPABASE_ANON_KEY` (public, safe for frontend)
   - `SUPABASE_SERVICE_ROLE_KEY` (secret — only for server-side API routes, never expose to frontend)
-- [ ] Add all three to Vercel: Project → Settings → Environment Variables
+- [ ] Add all three to Cloudflare Pages: project → **Settings → Environment Variables**
 - [ ] In Supabase: **Authentication → Providers → Email** — confirm it is enabled (it is by default)
-- [ ] In Supabase: **Authentication → URL Configuration** → set **Site URL** to `https://inspiresaplingai.github.io` (update to Vercel URL once live)
-- [ ] In Supabase: set **Redirect URLs** to include `https://YOUR_VERCEL_URL/auth/callback`
+- [ ] In Supabase: **Authentication → URL Configuration** → set **Site URL** to `https://inspiresaplingai.github.io` (update to Cloudflare Pages URL once live)
+- [ ] In Supabase: set **Redirect URLs** to include `https://YOUR_CF_PAGES_URL/auth/callback`
 
 ### 1.3 Resend (required for Phase 4B — email confirmations)
 - [ ] Go to [resend.com](https://resend.com) → Sign up (free tier: 100 emails/day, 3,000/month)
 - [ ] Verify a sending domain (requires DNS access to your domain, OR use `onboarding@resend.dev` for testing)
 - [ ] Create an API key → copy as `RESEND_API_KEY`
-- [ ] Add to Vercel environment variables
+- [ ] Add to Cloudflare Pages environment variables
 
 ### 1.4 OpenAI (required for Phase 4D)
 - [ ] Go to [platform.openai.com](https://platform.openai.com) → Sign up / log in
 - [ ] Navigate to **API Keys** → Create new secret key → copy as `OPENAI_API_KEY`
 - [ ] Set a **Usage Limit** (recommended: $10/month hard limit to prevent surprises)
-- [ ] Add to Vercel environment variables (server-side only — never expose in frontend code)
+- [ ] Add to Cloudflare Pages environment variables (server-side only — never expose in frontend code)
 
 ### 1.5 RapidAPI / JSearch (required for Phase 4D — job search)
 - [ ] Go to [rapidapi.com](https://rapidapi.com) → Sign up
 - [ ] Search for **JSearch** → Subscribe to **Basic plan** (500 free requests/month)
 - [ ] Copy `X-RapidAPI-Key` → save as `RAPIDAPI_KEY`
-- [ ] Add to Vercel environment variables
+- [ ] Add to Cloudflare Pages environment variables
 
 ### 1.6 Stripe (required for Phase 4E — coaching payments)
 > ⚠️ **Do this AFTER non-profit registration is complete.**
 - [ ] Go to [stripe.com](https://stripe.com) → Create account as a non-profit
 - [ ] Complete business verification with EIN and non-profit documentation
 - [ ] Go to **Developers → API Keys** → copy `STRIPE_SECRET_KEY` (live mode)
-- [ ] Go to **Developers → Webhooks** → Add endpoint `https://YOUR_VERCEL_URL/api/stripe/webhook` → select events: `checkout.session.completed`, `payment_intent.succeeded`
+- [ ] Go to **Developers → Webhooks** → Add endpoint `https://YOUR_CF_PAGES_URL/api/stripe/webhook` → select events: `checkout.session.completed`, `payment_intent.succeeded`
 - [ ] Copy **Webhook Signing Secret** → save as `STRIPE_WEBHOOK_SECRET`
-- [ ] Add both to Vercel environment variables
+- [ ] Add both to Cloudflare Pages environment variables
 
 ### 1.7 Donorbox (required for Phase 4C — donations)
 > ⚠️ **Do this AFTER non-profit registration is complete.**
@@ -122,7 +123,7 @@
 | Layer | Technology | Why |
 |-------|-----------|-----|
 | Framework | Astro 5 with `output: 'hybrid'` | Static pages stay static; API routes are server-rendered. No full SPA needed. |
-| Hosting | Vercel (free tier) | The only free platform that supports Astro SSR API routes with zero config. |
+| Hosting | Cloudflare Pages (free tier) | Truly free with no commercial restrictions; Astro SSR via Workers; unlimited bandwidth; 100K requests/day. |
 | Database + Auth | Supabase (free tier) | PostgreSQL + built-in auth + storage + row-level security in one free service. |
 | Email | Resend (free tier) | Modern email API, 3K/month free, excellent deliverability. |
 | AI | OpenAI GPT-4o mini | Cheapest capable model (~$0.15/1M tokens). A resume analysis costs ~$0.0003. |
@@ -134,6 +135,7 @@
 | File Storage | Supabase Storage | Resume uploads stored with per-user RLS. Included in free tier. |
 
 ### Why NOT the alternatives
+- **Vercel**: Hobby plan prohibits commercial use; Pro plan is $20/month per seat
 - **Discord SDK**: Requires users to have Discord, adds authentication complexity, not accessible
 - **Cloudinary**: Redundant — Supabase Storage handles the same use case for free
 - **Firebase**: More complex pricing, less transparent, harder to query with SQL
@@ -147,7 +149,7 @@
 
 | Service | Free Tier | Estimated Cost at 500 MAU |
 |---------|-----------|--------------------------|
-| Vercel | 100GB bandwidth, unlimited builds | $0 |
+| Cloudflare Pages | Unlimited bandwidth, unlimited builds, 100K req/day | $0 |
 | Supabase | 500MB DB, 50K MAU, 1GB storage | $0 |
 | Resend | 3,000 emails/month | $0 |
 | OpenAI | Pay-per-use | ~$0.15 (500 users × 3 analyses × ~$0.0001) |
@@ -160,14 +162,14 @@
 
 ---
 
-## 4. Phase 4A — Foundation: Vercel + Supabase Auth
+## 4. Phase 4A — Foundation: Cloudflare Pages + Supabase Auth
 
 > **Dependencies:** Pre-flight items 1.1 and 1.2 must be complete.
 > **Branch:** `feat/phase-4a-auth`
 
 ### 4.1 👤 Manual Steps (before agent starts)
-- Complete pre-flight 1.1 (Vercel) and 1.2 (Supabase)
-- Have `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` ready in Vercel env vars
+- Complete pre-flight 1.1 (Cloudflare Pages) and 1.2 (Supabase)
+- Have `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` ready in Cloudflare Pages env vars
 - Run this SQL in Supabase SQL Editor (Project → SQL Editor → New query):
 
 ```sql
@@ -178,7 +180,7 @@
 
 **New packages to install:**
 ```bash
-npm install @astrojs/vercel @supabase/supabase-js @supabase/ssr
+npm install @astrojs/cloudflare @supabase/supabase-js @supabase/ssr
 ```
 
 **Files to create:**
@@ -199,7 +201,7 @@ npm install @astrojs/vercel @supabase/supabase-js @supabase/ssr
 
 | File | Change |
 |------|--------|
-| `astro.config.mjs` | Add `@astrojs/vercel` adapter, set `output: 'hybrid'` |
+| `astro.config.mjs` | Add `@astrojs/cloudflare` adapter, set `output: 'hybrid'` |
 | `src/components/Navbar.astro` | Import `UserMenu.astro`; show Login button when logged out, `UserMenu` when logged in. Read `Astro.locals.user` via props. |
 
 **Key implementation notes for agent:**
@@ -208,6 +210,7 @@ npm install @astrojs/vercel @supabase/supabase-js @supabase/ssr
 - Route protection: redirect `request.url` to `/auth/login?next=<encoded-url>` and restore after login
 - After signup, Supabase sends a confirmation email automatically — no extra code needed
 - Create the `profiles` row on `auth.users` insert via a Supabase Database Trigger (SQL in Section 11)
+- The `@astrojs/cloudflare` adapter runs on V8 isolates (not full Node.js) — use `fetch`, Web Crypto API, and Web standard APIs; avoid Node.js-specific built-ins
 
 ### 4.3 Verification Checklist
 - [ ] `npm run build` — 0 errors
@@ -316,7 +319,7 @@ No new packages. No API routes. No database tables (Donorbox handles all of this
 
 **New packages:**
 ```bash
-npm install openai pdf-parse
+npm install openai
 ```
 
 **Files to create:**
@@ -324,25 +327,30 @@ npm install openai pdf-parse
 | File | Purpose |
 |------|---------|
 | `src/pages/dashboard/career.astro` | Main UI: resume upload form, job target input, results display area, usage counter ("X of 3 free analyses used") |
-| `src/pages/api/ai/analyze-resume.ts` | POST API route (server-side): reads uploaded file from Supabase Storage → extracts text via `pdf-parse` → sends to OpenAI → saves result to `resume_analyses` → increments `profiles.ai_credits_used` → returns JSON |
+| `src/pages/api/ai/analyze-resume.ts` | POST API route (server-side): reads uploaded file from Supabase Storage → uploads PDF to OpenAI Files API as a native file attachment → sends to GPT-4o-mini with file reference → saves result to `resume_analyses` → increments `profiles.ai_credits_used` → returns JSON |
 | `src/pages/api/ai/upload-resume.ts` | POST API route: receives `multipart/form-data`, validates file type (PDF/DOCX only) and size (max 5MB), uploads to Supabase Storage at `resumes/{user_id}/{timestamp}.pdf`, returns storage path |
 | `src/pages/api/jobs/search.ts` | GET API route: proxies JSearch API with user's job title and location params → returns top 10 matching jobs. Caches results for 1 hour using Vercel edge cache headers. |
 
-**OpenAI prompt template (in `analyze-resume.ts`):**
-```
-You are an expert career coach and technical recruiter. Analyze the following resume and target job description.
+**OpenAI file upload pattern (in `analyze-resume.ts`):**
+```typescript
+// Upload PDF directly to OpenAI — no pdf-parse needed
+const file = await openai.files.create({
+  file: new File([pdfBuffer], 'resume.pdf', { type: 'application/pdf' }),
+  purpose: 'user_data',
+});
 
-Return a JSON object with these fields:
-- strengths: string[] (3-5 key strengths from the resume)
-- gaps: string[] (3-5 missing skills or experiences for the target role)  
-- rewrite_suggestions: { section: string, original: string, improved: string }[] (top 3 specific rewrites)
-- overall_score: number (1-10, how well the resume matches the role)
-- summary: string (2-3 sentence overall assessment)
+const response = await openai.responses.create({
+  model: 'gpt-4o-mini',
+  input: [{
+    role: 'user',
+    content: [
+      { type: 'input_file', file_id: file.id },
+      { type: 'input_text', text: `You are an expert career coach. Analyze this resume for the target role: ${jobTitle}. Return a JSON object with: strengths (string[]), gaps (string[]), rewrite_suggestions ({section, original, improved}[]), overall_score (1–10), summary (string).` }
+    ]
+  }]
+});
 
-Resume:
-{resume_text}
-
-Target role: {job_title}
+await openai.files.del(file.id); // clean up after analysis
 ```
 
 **Usage control logic (in `analyze-resume.ts`):**
@@ -650,7 +658,7 @@ CREATE POLICY "Admins can update applications" ON public.volunteer_applications 
 
 ## 12. Environment Variables Reference
 
-> Add all of these to Vercel: Project → Settings → Environment Variables.
+> Add all of these to Cloudflare Pages: Project → **Settings → Environment Variables**.
 > The `.env.example` file in the repo contains all keys (without values) for reference.
 
 | Variable | Phase | Where to get it | Exposed to frontend? |
@@ -672,8 +680,8 @@ CREATE POLICY "Admins can update applications" ON public.volunteer_applications 
 ## 13. Build Order & Dependencies
 
 ```
-Pre-flight 1.1 (Vercel) ─────┐
-Pre-flight 1.2 (Supabase) ───┴──► Phase 4A (Auth/Foundation) ──────────────────────────────────┐
+Pre-flight 1.1 (Cloudflare) ──┐
+Pre-flight 1.2 (Supabase) ────┴──► Phase 4A (Auth/Foundation) ──────────────────────────────────┐
                                                                                                   │
                                                                 ┌─────────────────────────────────┤
                                                                 │                                 │
@@ -701,4 +709,4 @@ Pre-flight 1.3 (Resend) ──────────────────�
 
 ---
 
-*Last updated: May 2026 — Phase 3 complete, Phase 4 pending non-profit registration and Vercel migration.*
+*Last updated: May 2026 — Phase 3 complete, Phase 4 pending non-profit registration. Hosting updated to Cloudflare Pages (free, no commercial restrictions); PDF parsing updated to use native OpenAI file upload API (eliminates `pdf-parse` dependency).*
