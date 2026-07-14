@@ -27,53 +27,12 @@ const impactItems = [
 
   <div class="max-w-4xl mx-auto px-4 py-16 space-y-14">
 
-    <!-- Registration notice -->
-    <div class="flex items-start gap-4 p-5 bg-amber-50 border border-amber-200 rounded-2xl">
-      <div class="flex-shrink-0 w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 font-bold text-lg">!</div>
-      <div>
-        <p class="font-bold text-amber-800 mb-1">Non-profit registration in progress</p>
-        <p class="text-sm text-amber-700 leading-relaxed">
-          We are currently in the process of registering as a 501(c)(3) non-profit organization. Our donation portal will go live once registration is approved.
-          In the meantime, please <a href="/#contact" class="underline font-semibold hover:text-amber-900">contact us</a> if you would like to support us early.
-        </p>
-      </div>
-    </div>
-
-    <!-- Donation options (coming soon) -->
+    <!-- Donorbox donation widget -->
     <section>
-      <h2 class="text-2xl font-extrabold text-gray-900 mb-6 text-center">Donation Options — Coming Soon</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <!-- One-time -->
-        <div class="bg-white rounded-2xl border-2 border-gray-100 p-8 relative overflow-hidden flex flex-col">
-          <span class="absolute top-4 right-4 px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-bold">🚧 Coming Soon</span>
-          <div class="text-3xl mb-3">💳</div>
-          <h3 class="text-xl font-bold text-gray-900 mb-2">One-Time Gift</h3>
-          <p class="text-gray-500 text-sm leading-relaxed flex-1 mb-6">
-            Make a single contribution of any amount. Every dollar goes directly toward our programs — no administrative overhead fees.
-          </p>
-          <button
-            disabled
-            class="w-full py-3 rounded-xl bg-gray-100 text-gray-400 text-sm font-bold cursor-not-allowed border border-gray-100"
-          >
-            Donate Once — Opening Soon
-          </button>
-        </div>
-
-        <!-- Monthly -->
-        <div class="bg-white rounded-2xl border-2 border-primary-100 p-8 relative overflow-hidden flex flex-col">
-          <span class="absolute top-4 right-4 px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-bold">🚧 Coming Soon</span>
-          <div class="text-3xl mb-3">🔄</div>
-          <h3 class="text-xl font-bold text-gray-900 mb-2">Monthly Supporter</h3>
-          <p class="text-gray-500 text-sm leading-relaxed flex-1 mb-6">
-            Commit to a recurring monthly amount and become a sustaining member. Monthly supporters get priority access to events and a Supporter badge.
-          </p>
-          <button
-            disabled
-            class="w-full py-3 rounded-xl bg-gray-100 text-gray-400 text-sm font-bold cursor-not-allowed border border-gray-100"
-          >
-            Give Monthly — Opening Soon
-          </button>
-        </div>
+      <h2 class="text-2xl font-extrabold text-gray-900 mb-6 text-center">Make a Donation</h2>
+      <div class="flex justify-center">
+        <script type="module" src="https://donorbox.org/widgets.js" async></script>
+        <dbox-widget campaign="donate-to-inspiresaplingai" type="donation_form" enable-auto-scroll="true"></dbox-widget>
       </div>
     </section>
 

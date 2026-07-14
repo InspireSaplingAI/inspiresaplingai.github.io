@@ -1,14 +1,5 @@
 ---
 import Layout from '../layouts/Layout.astro';
-
-const categories = [
-  { name: 'AI Learning & Resources', emoji: '📚', description: 'Discuss articles, share study tips, ask questions about AI concepts.' },
-  { name: 'Career & Job Search', emoji: '💼', description: 'Resume advice, job leads, interview experience, career pivots.' },
-  { name: 'Events & Programs', emoji: '📅', description: 'Questions and discussion about our workshops, competitions, and lectures.' },
-  { name: 'AI Research Corner', emoji: '🔬', description: 'Deep-dives into papers, technical discussions, research ideas.' },
-  { name: 'Project Collaboration', emoji: '🤝', description: 'Find co-founders, collaborators, and teammates for AI projects.' },
-  { name: 'General Discussion', emoji: '💬', description: 'Introductions, off-topic chat, feedback about InspireSaplingAI.' },
-];
 ---
 
 <Layout
@@ -18,95 +9,44 @@ const categories = [
   <!-- Hero -->
   <section class="bg-gradient-to-br from-indigo-900 via-indigo-800 to-emerald-900 pt-32 pb-20 px-4 text-white text-center">
     <div class="max-w-3xl mx-auto">
-      <span class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 text-indigo-200 text-sm font-semibold mb-6 border border-white/20">
-        <span class="inline-block w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
-        Embedded Forum Coming Soon
-      </span>
       <h1 class="text-4xl md:text-5xl font-extrabold mb-5 leading-tight">
         Community Forum
       </h1>
       <p class="text-xl text-indigo-100 max-w-2xl mx-auto leading-relaxed">
         A space to learn together, share resources, discuss AI, and support each other's career journeys.
       </p>
+      <a
+        href="https://github.com/InspireSaplingAI/inspiresaplingai.github.io/discussions"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 mt-8 px-6 py-3 bg-white/10 border border-white/30 text-white font-semibold rounded-xl hover:bg-white/20 transition-colors"
+      >
+        View on GitHub Discussions
+        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+        </svg>
+      </a>
     </div>
   </section>
 
-  <div class="max-w-5xl mx-auto px-4 py-16 space-y-14">
-
-    <!-- Current interim community -->
-    <section class="bg-indigo-50 border border-indigo-200 rounded-2xl p-8 flex flex-col sm:flex-row items-start gap-6">
-      <div class="flex-shrink-0 w-14 h-14 rounded-2xl bg-indigo-100 flex items-center justify-center text-2xl">💬</div>
-      <div class="flex-1">
-        <h2 class="text-xl font-bold text-indigo-900 mb-2">Join Us on GitHub Discussions Now</h2>
-        <p class="text-indigo-700 text-sm leading-relaxed mb-4">
-          While the embedded forum is being built, our community is active on GitHub Discussions. You can participate with any GitHub account — no extra sign-up needed.
-        </p>
-        <a
-          href="https://github.com/InspireSaplingAI/inspiresaplingai.github.io/discussions"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 px-5 py-2.5 bg-indigo-700 text-white text-sm font-bold rounded-xl hover:bg-indigo-800 transition-colors"
-        >
-          Open GitHub Discussions
-          <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-          </svg>
-        </a>
-      </div>
-    </section>
-
-    <!-- Forum categories (preview) -->
-    <section>
-      <h2 class="text-2xl font-extrabold text-gray-900 mb-2">Forum Categories</h2>
-      <p class="text-gray-500 mb-8">When the embedded forum launches, these will be the discussion spaces available to members.</p>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {categories.map(cat => (
-          <div class="flex items-start gap-4 p-5 bg-white rounded-xl border border-gray-100 shadow-sm relative">
-            <span class="absolute top-3 right-3 px-2 py-0.5 rounded-full bg-amber-100 text-amber-600 text-[10px] font-bold">🚧 Soon</span>
-            <span class="text-2xl flex-shrink-0">{cat.emoji}</span>
-            <div>
-              <p class="font-semibold text-gray-900 text-sm">{cat.name}</p>
-              <p class="text-xs text-gray-500 mt-0.5 leading-relaxed">{cat.description}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-
-    <!-- Coming soon panel -->
-    <section class="bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
-      <div class="flex items-center gap-3 mb-4">
-        <span class="text-2xl">🔨</span>
-        <h2 class="text-xl font-bold text-gray-900">What's Being Built</h2>
-        <span class="px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-700 text-xs font-bold">Phase 4F</span>
-      </div>
-      <ul class="space-y-3 text-sm text-gray-600">
-        {[
-          'Embedded forum powered by GitHub Discussions (giscus)',
-          'Post and reply directly on this page without leaving the site',
-          'Login with GitHub account — no extra registration required',
-          'Moderated categories with member-only posting',
-          'Notifications for replies to your posts',
-        ].map(item => (
-          <li class="flex items-start gap-2.5">
-            <svg class="h-4 w-4 text-primary-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-            {item}
-          </li>
-        ))}
-      </ul>
-    </section>
-
-    <!-- CTA -->
-    <section class="text-center">
-      <p class="text-gray-500 mb-5">Want to be notified when the forum opens?</p>
-      <a
-        href="/#contact"
-        class="inline-flex items-center gap-2 px-8 py-3.5 bg-primary-600 text-white font-bold rounded-xl hover:bg-primary-700 transition-colors shadow-lg"
-      >
-        Get Notified
-      </a>
-    </section>
+  <div class="max-w-4xl mx-auto px-4 py-16">
+    <!-- giscus forum embed -->
+    <div class="giscus">
+      <script src="https://giscus.app/client.js"
+              data-repo="InspireSaplingAI/inspiresaplingai.github.io"
+              data-repo-id="R_kgDOOUhVeg"
+              data-category="General"
+              data-category-id="DIC_kwDOOUhVes4DBMwk"
+              data-mapping="pathname"
+              data-strict="0"
+              data-reactions-enabled="1"
+              data-emit-metadata="0"
+              data-input-position="bottom"
+              data-theme="preferred_color_scheme"
+              data-lang="en"
+              crossorigin="anonymous"
+              async>
+      </script>
+    </div>
   </div>
 </Layout>

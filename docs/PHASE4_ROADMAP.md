@@ -33,61 +33,68 @@
 > Agent cannot complete these steps. They require human login, form submission, or payment.
 
 ### 1.1 Cloudflare Pages (required for Phase 4A)
-- [ ] Go to [cloudflare.com](https://cloudflare.com) → Sign up / log in (free — no commercial use restrictions)
-- [ ] Go to **Workers & Pages** → **Create** → **Pages** → **Connect to Git**
-- [ ] Select the `InspireSaplingAI/inspiresaplingai.github.io` repository
-- [ ] Framework preset: **Astro** (auto-detected); build command `npm run build`, output directory `dist`
-- [ ] Click **Save and Deploy** — first deploy succeeds (static mode still works)
-- [ ] After agent adds `@astrojs/cloudflare` adapter: Cloudflare redeploys automatically on every `git push main`
-- [ ] **Disable GitHub Pages** after confirming Cloudflare deploy works (repo Settings → Pages → Source → None)
+- [X] Go to [cloudflare.com](https://cloudflare.com) → Sign up / log in (free — no commercial use restrictions)
+- [X] Go to **Workers & Pages** → **Create** → **Pages** → **Connect to Git**
+- [X] Select the `InspireSaplingAI/inspiresaplingai.github.io` repository
+- [X] Framework preset: **Astro** (auto-detected); build command `npm run build`, output directory `dist`
+- [X] Click **Save and Deploy** — first deploy succeeds (static mode still works)
+- [X] After agent adds `@astrojs/cloudflare` adapter: Cloudflare redeploys automatically on every `git push main`
+- [X] **Disable GitHub Pages** after confirming Cloudflare deploy works (repo Settings → Pages → GitHub Pages → Unpublish site)
 
 ### 1.2 Supabase (required for Phase 4A)
-- [ ] Go to [supabase.com](https://supabase.com) → Sign up (free)
-- [ ] Click **New Project** → name it `inspiresaplingai` → choose nearest region → set a strong DB password (save it!)
-- [ ] Wait ~2 minutes for provisioning
-- [ ] Go to **Project Settings → API** and copy:
-  - `SUPABASE_URL` (looks like `https://xxxxx.supabase.co`)
-  - `SUPABASE_ANON_KEY` (public, safe for frontend)
-  - `SUPABASE_SERVICE_ROLE_KEY` (secret — only for server-side API routes, never expose to frontend)
-- [ ] Add all three to Cloudflare Pages: project → **Settings → Environment Variables**
-- [ ] In Supabase: **Authentication → Providers → Email** — confirm it is enabled (it is by default)
-- [ ] In Supabase: **Authentication → URL Configuration** → set **Site URL** to `https://inspiresaplingai.github.io` (update to Cloudflare Pages URL once live)
-- [ ] In Supabase: set **Redirect URLs** to include `https://YOUR_CF_PAGES_URL/auth/callback`
+- [X] Go to [supabase.com](https://supabase.com) → Sign up (free)
+- [X] Click **New Project** → name it `inspiresaplingai` → choose nearest region → set a strong DB password (save it!)
+- [X] Wait ~2 minutes for provisioning
+- [X] Go to **Project Settings → API** and copy:
+  - `SUPABASE_URL` (looks like `https://sqmjcrqmpcnizjaoxpjh.supabase.co`)
+  - `Publishable key` (public, safe for frontend)
+  - `Secret key` (secret — only for server-side API routes, never expose to frontend)
+- [X] Add all three to Cloudflare Pages: project → **Settings → Environment Variables**
+
+  | Variable | Cloudflare Type | Reason |
+  |---|---|---|
+  | `PUBLIC_SUPABASE_URL` | Regular (not encrypted) | Project URL — not sensitive |
+  | `PUBLIC_SUPABASE_ANON_KEY` | Regular (not encrypted) | Designed to be public; RLS policies protect your data |
+  | `SUPABASE_SERVICE_ROLE_KEY` | **Encrypt** | Bypasses RLS — full DB access, never expose |
+
+- [X] In Supabase: **Authentication → Providers → Email** — confirm it is enabled (it is by default)
+- [X] In Supabase: **Authentication → URL Configuration** → set **Site URL** to `https://inspiresaplingai-github-io.pages.dev` (update to Cloudflare Pages URL once live)
+- [X] In Supabase: set **Redirect URLs** to include `https://YOUR_CF_PAGES_URL/auth/callback`
 
 ### 1.3 Resend (required for Phase 4B — email confirmations)
-- [ ] Go to [resend.com](https://resend.com) → Sign up (free tier: 100 emails/day, 3,000/month)
-- [ ] Verify a sending domain (requires DNS access to your domain, OR use `onboarding@resend.dev` for testing)
-- [ ] Create an API key → copy as `RESEND_API_KEY`
-- [ ] Add to Cloudflare Pages environment variables
+- [X] Go to [resend.com](https://resend.com) → Sign up (free tier: 100 emails/day, 3,000/month)
+- [X] Verify a sending domain (requires DNS access to your domain, OR use `onboarding@resend.dev` for testing)
+- [X] Create an API key → copy as `RESEND_API_KEY`
+- [X] Add to Cloudflare Pages environment variables
 
 ### 1.4 OpenAI (required for Phase 4D)
-- [ ] Go to [platform.openai.com](https://platform.openai.com) → Sign up / log in
-- [ ] Navigate to **API Keys** → Create new secret key → copy as `OPENAI_API_KEY`
-- [ ] Set a **Usage Limit** (recommended: $10/month hard limit to prevent surprises)
-- [ ] Add to Cloudflare Pages environment variables (server-side only — never expose in frontend code)
+- [X] Go to [platform.openai.com](https://platform.openai.com) → Sign up / log in
+- [X] Navigate to **API Keys** → Create new secret key → copy as `OPENAI_API_KEY`
+- [X] Set a **Usage Limit** (recommended: $10/month hard limit to prevent surprises)
+- [X] Add to Cloudflare Pages environment variables (server-side only — never expose in frontend code)
 
 ### 1.5 RapidAPI / JSearch (required for Phase 4D — job search)
-- [ ] Go to [rapidapi.com](https://rapidapi.com) → Sign up
-- [ ] Search for **JSearch** → Subscribe to **Basic plan** (500 free requests/month)
-- [ ] Copy `X-RapidAPI-Key` → save as `RAPIDAPI_KEY`
-- [ ] Add to Cloudflare Pages environment variables
+- [X] Go to [rapidapi.com](https://rapidapi.com) → Sign up
+- [X] Search for **JSearch** → Subscribe to **Basic plan** (500 free requests/month)
+- [X] Copy `X-RapidAPI-Key` → save as `RAPIDAPI_KEY`
+- [X] Add to Cloudflare Pages environment variables
 
 ### 1.6 Stripe (required for Phase 4E — coaching payments)
 > ⚠️ **Do this AFTER non-profit registration is complete.**
-- [ ] Go to [stripe.com](https://stripe.com) → Create account as a non-profit
-- [ ] Complete business verification with EIN and non-profit documentation
-- [ ] Go to **Developers → API Keys** → copy `STRIPE_SECRET_KEY` (live mode)
-- [ ] Go to **Developers → Webhooks** → Add endpoint `https://YOUR_CF_PAGES_URL/api/stripe/webhook` → select events: `checkout.session.completed`, `payment_intent.succeeded`
-- [ ] Copy **Webhook Signing Secret** → save as `STRIPE_WEBHOOK_SECRET`
-- [ ] Add both to Cloudflare Pages environment variables
+- [X] Go to [stripe.com](https://stripe.com) → Create account as a non-profit
+- [X] Complete business verification with EIN and non-profit documentation
+- [X] Go to **Developers → API Keys** → copy `STRIPE_SECRET_KEY` (live mode)
+- [X] Go to **Developers → Webhooks** → Add endpoint `https://YOUR_CF_PAGES_URL/api/stripe/webhook` → select events: `checkout.session.completed`, `payment_intent.succeeded`
+- [X] Copy **Webhook Signing Secret** → save as `STRIPE_WEBHOOK_SECRET`
+- [X] Add both to Cloudflare Pages environment variables
 
 ### 1.7 Donorbox (required for Phase 4C — donations)
 > ⚠️ **Do this AFTER non-profit registration is complete.**
-- [ ] Go to [donorbox.org](https://donorbox.org) → Sign up as a non-profit (requires 501c3 documentation)
-- [ ] Create a campaign with one-time and monthly donation options
-- [ ] From the campaign page: click **Embed** → copy the `<script>` and `<iframe>` embed code
-- [ ] Save the embed code — the agent will paste it into `src/pages/donate.astro`
-- [ ] No API key needed — it's purely an embed widget
+- [X] Go to [donorbox.org](https://donorbox.org) → Sign up as a non-profit (requires 501c3 documentation)
+- [X] Create a campaign -> Donation Form 
+- [X] From the campaign page: click **Embed** → copy the `<script>` and `<iframe>` embed code
+- [X] Save the embed code — the agent will paste it into `src/pages/donate.astro`
+- [X] No API key needed — it's purely an embed widget
 
 ### 1.8 GitHub Discussions (required for Phase 4F)
 - [ ] Go to the GitHub repo → **Settings** → scroll to **Features** section
@@ -100,15 +107,15 @@
   - 🤝 Project Collaboration
   - 💬 General Discussion
 
-### 1.9 giscus (required for Phase 4F — forum embed)
-- [ ] Go to [giscus.app](https://giscus.app)
-- [ ] Enter repo: `InspireSaplingAI/inspiresaplingai.github.io`
-- [ ] Select **Discussion category**: General Discussion (or create a "Comments" category)
-- [ ] Page ↔ Discussion mapping: **pathname**
-- [ ] Theme: **preferred_color_scheme**
-- [ ] Copy the generated `<script>` tag — the agent will paste it into `src/pages/forum.astro`
-- [ ] Install the **giscus GitHub App** on the repo (link shown on giscus.app)
-
+### 1.9 giscus (required for Phase 4F — forum embed - widgets enabling reads/writes to github Discussions)
+- [X] Install the **giscus GitHub App** on the repo: Go to github.com/apps/giscus → Install → select InspireSaplingAI/inspiresaplingai.github.io
+- [X] Go to [giscus.app](https://giscus.app)
+- [X] Enter repo: `InspireSaplingAI/inspiresaplingai.github.io`
+- [X] Select **Discussion category**: General Discussion (or create a "Comments" category)
+- [X] Page ↔ Discussion mapping: **pathname**
+- [X] Theme: **preferred_color_scheme**
+- [X] Copy the generated `<script>` tag — the agent will paste it into `src/pages/forum.astro`
+ 
 ### 1.10 Cal.com (required for Phase 4E — coaching booking; per mentor)
 > Each mentor sets up their own Cal.com account independently.
 - [ ] Each mentor: go to [cal.com](https://cal.com) → Sign up (free)
