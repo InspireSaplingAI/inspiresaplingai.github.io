@@ -118,9 +118,9 @@
  
 ### 1.10 Cal.com (required for Phase 4E — coaching booking; per mentor)
 > Each mentor sets up their own Cal.com account independently.
-- [ ] Each mentor: go to [cal.com](https://cal.com) → Sign up (free)
-- [ ] Set availability and create a "1-on-1 Coaching" event type (60 min)
-- [ ] Copy their booking URL (e.g., `https://cal.com/mentor-name/coaching`)
+- [X] Each mentor: go to [cal.com](https://cal.com) → Sign up (free)
+- [X] Set availability and create a "1-on-1 Coaching" event type (60 min)
+- [X] Copy their booking URL (e.g., `https://cal.com/mentor-name/coaching`)
 - [ ] Admin: paste the Cal.com URL into the mentor's row in the `mentor_profiles` Supabase table
 
 ---
@@ -398,7 +398,7 @@ if (profile.ai_credits_used >= 3) {
 - Complete Stripe setup (pre-flight 1.6) after non-profit registration
 - For each mentor: complete Cal.com setup (pre-flight 1.10)
 - Run SQL to create `mentor_profiles` and `coaching_sessions` tables (see Section 11)
-- In Supabase: manually insert each approved mentor into `mentor_profiles` table (or use Supabase Studio)
+- In Supabase: manually insert each approved mentor into `mentor_profiles` table (or use Supabase Studio) (url: https://cal.com/zangma-hit-cfpb8t/1-on-1-coaching)
 - In Stripe: create a **Price** for each mentor's hourly rate (e.g., $50/hr = Price ID `price_xxxxx`)
   - Go to Stripe Dashboard → Products → Add Product → set recurring = false, price = mentor's rate
   - Copy the `Price ID` and add it to the mentor's `mentor_profiles.stripe_price_id` column
