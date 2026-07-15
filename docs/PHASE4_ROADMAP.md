@@ -97,9 +97,9 @@
 - [X] No API key needed — it's purely an embed widget
 
 ### 1.8 GitHub Discussions (required for Phase 4F)
-- [ ] Go to the GitHub repo → **Settings** → scroll to **Features** section
-- [ ] Enable **Discussions**
-- [ ] Click the new **Discussions** tab → create these categories:
+- [X] Go to the GitHub repo → **Settings** → scroll to **Features** section
+- [X] Enable **Discussions**
+- [X] Click the new **Discussions** tab → create these categories:
   - 📚 AI Learning & Resources
   - 💼 Career & Job Search
   - 📅 Events & Programs

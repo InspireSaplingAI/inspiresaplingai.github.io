@@ -1,4 +1,17 @@
 ---
+import UserMenu from './auth/UserMenu.astro'
+
+export interface Props {
+    user?: {
+        email?: string | null
+        user_metadata?: {
+            avatar_url?: string
+            full_name?: string
+        }
+    } | null
+}
+
+const { user } = Astro.props
 ---
 
 <header class="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-sm border-b border-gray-100 shadow-sm">
@@ -21,12 +34,16 @@
       <li><a href="/membership" class="hover:text-primary-600 transition-colors">Membership</a></li>
       <li><a href="/donate" class="hover:text-primary-600 transition-colors">Donate</a></li>
       <li>
-        <a
-          href="/#contact"
-          class="px-4 py-2 rounded-full bg-primary-600 text-white hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-        >
-          Contact
-        </a>
+        {user ? (
+          <UserMenu user={user} />
+        ) : (
+          <a
+            href="/auth/login"
+            class="px-4 py-2 rounded-full bg-primary-600 text-white hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+          >
+            Log In
+          </a>
+        )}
       </li>
     </ul>
 
@@ -53,7 +70,16 @@
       <li><a href="/donate" class="block hover:text-primary-600 transition-colors">Donate</a></li>
       <li><a href="/forum" class="block hover:text-primary-600 transition-colors">Forum</a></li>
       <li><a href="/volunteer" class="block hover:text-primary-600 transition-colors">Volunteer</a></li>
-      <li><a href="/#contact" class="block hover:text-primary-600 transition-colors">Contact</a></li>
+      <li>
+        {user ? (
+          <>
+            <a href="/dashboard" class="block hover:text-primary-600 transition-colors">Dashboard</a>
+            <a href="/auth/logout" class="block text-red-600 hover:text-red-700 transition-colors">Sign Out</a>
+          </>
+        ) : (
+          <a href="/auth/login" class="block hover:text-primary-600 transition-colors">Log In</a>
+        )}
+      </li>
     </ul>
   </div>
 </header>

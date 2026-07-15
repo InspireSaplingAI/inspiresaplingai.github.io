@@ -14,6 +14,8 @@ import DownloadBanner from '../components/mission/DownloadBanner.astro';
 
 import { getEntry } from 'astro:content';
 
+const user = Astro.locals.user;
+
 const vision   = await getEntry('mission', 'vision');
 const purpose  = await getEntry('mission', 'purpose');
 const pillars  = await getEntry('mission', 'pillars');
@@ -28,7 +30,7 @@ const partners = await getEntry('mission', 'partners');
   title="Mission & Purpose — InspireSaplingAI"
   description="Learn about InspireSaplingAI's vision, core purpose, four strategic pillars, and theory of change for AI education equity."
 >
-  <Navbar />
+  <Navbar user={user} />
 
   <!-- Printable area (captured by PDF generator) -->
   <div id="mission-content">
