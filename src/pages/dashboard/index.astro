@@ -1,0 +1,80 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import { createClient } from '../../lib/supabase-server'
+
+export const prerender = false
+
+const supabase = createClient(Astro)
+const { data: { user } } = await supabase.auth.getUser()
+
+// Fetch profile data
+const { data: profile } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', user?.id)
+    .single()
+---
+
+<Layout title="Dashboard — InspireSaplingAI">
+    <div class="min-h-screen bg-gray-50 pt-24 pb-12">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Welcome Header -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 rounded-full bg-primary-100 flex items-center justify-center text-primary-600 text-2xl font-bold">
+                        {(profile?.name || user?.email || '?').charAt(0).toUpperCase()}
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-900">
+                            Welcome, {profile?.name || user?.email?.split('@')[0] || 'Member'}
+                        </h1>
+                        <p class="text-sm text-gray-500">{user?.email}</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                    <h3 class="text-sm font-medium text-gray-500 mb-1">Role</h3>
+                    <p class="text-lg font-semibold text-gray-900 capitalize">{profile?.role || 'member'}</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                    <h3 class="text-sm font-medium text-gray-500 mb-1">AI Credits Used</h3>
+                    <p class="text-lg font-semibold text-gray-900">{profile?.ai_credits_used || 0}</p>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                    <h3 class="text-sm font-medium text-gray-500 mb-1">Member Since</h3>
+                    <p class="text-lg font-semibold text-gray-900">
+                        {profile?.created_at
+                            ? new Date(profile.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
+                            : 'Today'}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">Quick Links</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <a href="/events" class="p-4 rounded-xl border border-gray-200 hover:border-primary-300 hover:bg-primary-50 transition-colors">
+                        <h3 class="font-medium text-gray-900">Browse Events</h3>
+                        <p class="text-sm text-gray-500 mt-1">Register for upcoming events and workshops</p>
+                    </a>
+                    <a href="/membership" class="p-4 rounded-xl border border-gray-200 hover:border-primary-300 hover:bg-primary-50 transition-colors">
+                        <h3 class="font-medium text-gray-900">Membership</h3>
+                        <p class="text-sm text-gray-500 mt-1">View your membership details</p>
+                    </a>
+                    <a href="/forum" class="p-4 rounded-xl border border-gray-200 hover:border-primary-300 hover:bg-primary-50 transition-colors">
+                        <h3 class="font-medium text-gray-900">Community Forum</h3>
+                        <p class="text-sm text-gray-500 mt-1">Join discussions with other members</p>
+                    </a>
+                    <a href="/volunteer" class="p-4 rounded-xl border border-gray-200 hover:border-primary-300 hover:bg-primary-50 transition-colors">
+                        <h3 class="font-medium text-gray-900">Volunteer</h3>
+                        <p class="text-sm text-gray-500 mt-1">Explore volunteer opportunities</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</Layout>

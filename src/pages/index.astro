@@ -7,10 +7,12 @@ import ProblemSolution from '../components/ProblemSolution.astro';
 import CallToAction from '../components/CallToAction.astro';
 import Contact from '../components/Contact.astro';
 import Footer from '../components/Footer.astro';
+
+const user = Astro.locals.user;
 ---
 
 <Layout>
-  <Navbar />
+  <Navbar user={user} />
   <main>
     <Hero />
     <WhoWeAre />

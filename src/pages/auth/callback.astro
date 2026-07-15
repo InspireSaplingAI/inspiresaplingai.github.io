@@ -1,0 +1,15 @@
+---
+import { createClient } from '../../lib/supabase-server'
+
+export const prerender = false
+
+const code = Astro.url.searchParams.get('code')
+const next = Astro.url.searchParams.get('next') || '/dashboard'
+
+if (code) {
+    const supabase = createClient(Astro)
+    await supabase.auth.exchangeCodeForSession(code)
+}
+
+return Astro.redirect(next)
+---

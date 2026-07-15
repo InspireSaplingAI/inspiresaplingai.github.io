@@ -1,0 +1,76 @@
+---
+export interface Props {
+    user: {
+        email?: string | null
+        user_metadata?: {
+            avatar_url?: string
+            full_name?: string
+        }
+    }
+}
+
+const { user } = Astro.props
+const avatarUrl = user?.user_metadata?.avatar_url
+const displayName = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'Member'
+const initial = displayName.charAt(0).toUpperCase()
+---
+
+<div class="relative group">
+    <button
+        id="user-menu-button"
+        class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-gray-200 hover:border-gray-300 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500"
+        aria-label="User menu"
+    >
+        {avatarUrl ? (
+            <img src={avatarUrl} alt="" class="w-7 h-7 rounded-full" />
+        ) : (
+            <div class="w-7 h-7 rounded-full bg-primary-100 flex items-center justify-center text-primary-600 text-xs font-bold">
+                {initial}
+            </div>
+        )}
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+        </svg>
+    </button>
+
+    <!-- Dropdown -->
+    <div
+        id="user-menu-dropdown"
+        class="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-1 hidden group-focus-within:block hover:block"
+    >
+        <div class="px-4 py-2 border-b border-gray-100">
+            <p class="text-sm font-medium text-gray-900 truncate">{displayName}</p>
+            <p class="text-xs text-gray-500 truncate">{user?.email}</p>
+        </div>
+        <a
+            href="/dashboard"
+            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+        >
+            Dashboard
+        </a>
+        <a
+            href="/auth/logout"
+            class="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+        >
+            Sign Out
+        </a>
+    </div>
+</div>
+
+<script>
+    const button = document.getElementById('user-menu-button')
+    const dropdown = document.getElementById('user-menu-dropdown')
+
+    button?.addEventListener('click', (e) => {
+        e.stopPropagation()
+        dropdown?.classList.toggle('hidden')
+    })
+
+    document.addEventListener('click', () => {
+        dropdown?.classList.add('hidden')
+    })
+
+    dropdown?.addEventListener('click', (e) => {
+        e.stopPropagation()
+    })
+</script>
