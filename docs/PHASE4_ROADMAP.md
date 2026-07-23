@@ -120,8 +120,10 @@
 > Each mentor sets up their own Cal.com account independently.
 - [X] Each mentor: go to [cal.com](https://cal.com) → Sign up (free)
 - [X] Set availability and create a "1-on-1 Coaching" event type (60 min)
-- [X] Copy their booking URL (e.g., `https://cal.com/mentor-name/coaching`)
-- [ ] Admin: paste the Cal.com URL into the mentor's row in the `mentor_profiles` Supabase table
+- [X] Copy their booking URL (e.g., `https://cal.com/zangma-hit-cfpb8t/1-on-1-coaching`)
+- [X] **Prerequisite:** Run the Section 11 SQL in Supabase SQL Editor to create the `mentor_profiles` table (includes `cal_link` column)
+- [X] **Prerequisite:** Insert the mentor's row into `mentor_profiles` via Supabase Studio (or SQL `INSERT`) — set `approved = true`
+- [X] Admin: paste the Cal.com URL into the mentor's `cal_link` column in the `mentor_profiles` Supabase table
 
 ---
 
