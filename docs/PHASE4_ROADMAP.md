@@ -178,7 +178,7 @@
 
 ### 4.1 👤 Manual Steps (before agent starts)
 - Complete pre-flight 1.1 (Cloudflare Pages) and 1.2 (Supabase)
-- Have `SUPABASE_URL`, `SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` ready in Cloudflare Pages env vars
+- Have `PUBLIC_SUPABASE_URL`, `PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` ready in Cloudflare Pages env vars
 - Run this SQL in Supabase SQL Editor (Project → SQL Editor → New query):
 
 ```sql
