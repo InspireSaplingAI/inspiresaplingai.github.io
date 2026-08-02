@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro'
+import Navbar from '../../components/Navbar.astro'
 import { createClient } from '../../lib/supabase-server'
 
 export const prerender = false
@@ -16,6 +17,7 @@ const { data: profile } = await supabase
 ---
 
 <Layout title="Dashboard — InspireSaplingAI">
+    <Navbar user={user} />
     <div class="min-h-screen bg-gray-50 pt-24 pb-12">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Welcome Header -->
