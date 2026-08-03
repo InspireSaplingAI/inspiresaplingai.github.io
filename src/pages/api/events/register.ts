@@ -6,6 +6,13 @@ import { Resend } from 'resend'
 export const prerender = false
 
 export const POST: APIRoute = async (context) => {
+    if (!import.meta.env.PUBLIC_SUPABASE_URL || !import.meta.env.PUBLIC_SUPABASE_ANON_KEY) {
+        return new Response(JSON.stringify({ error: 'supabase_not_configured' }), {
+            status: 503,
+            headers: { 'Content-Type': 'application/json' },
+        })
+    }
+
     const supabase = createClient(context)
     const {
         data: { user },
@@ -112,6 +119,13 @@ export const POST: APIRoute = async (context) => {
 }
 
 export const PATCH: APIRoute = async (context) => {
+    if (!import.meta.env.PUBLIC_SUPABASE_URL || !import.meta.env.PUBLIC_SUPABASE_ANON_KEY) {
+        return new Response(JSON.stringify({ error: 'supabase_not_configured' }), {
+            status: 503,
+            headers: { 'Content-Type': 'application/json' },
+        })
+    }
+
     const supabase = createClient(context)
     const {
         data: { user },

@@ -4,6 +4,14 @@ import { createClient } from '../../../lib/supabase-server'
 export const prerender = false
 
 export const GET: APIRoute = async (context) => {
+    // Return empty slugs if Supabase env vars are not configured
+    if (!import.meta.env.PUBLIC_SUPABASE_URL || !import.meta.env.PUBLIC_SUPABASE_ANON_KEY) {
+        return new Response(JSON.stringify({ slugs: [] }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+        })
+    }
+
     const supabase = createClient(context)
     const {
         data: { user },
