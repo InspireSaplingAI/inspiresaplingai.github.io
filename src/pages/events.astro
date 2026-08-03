@@ -69,18 +69,18 @@ const pastEvents = allEvents
       ) : (
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {upcomingEvents.map(event => (
-            <EventCard event={event.data} />
+            <EventCard event={event.data} slug={event.id} />
           ))}
         </div>
       )}
 
       <!-- Registration note -->
-      <div class="mt-8 p-4 bg-amber-50 border border-amber-200 rounded-xl flex items-start gap-3">
-        <svg class="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+      <div class="mt-8 p-4 bg-sky-50 border border-sky-200 rounded-xl flex items-start gap-3">
+        <svg class="h-5 w-5 text-sky-500 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        <p class="text-sm text-amber-700">
-          <strong>About registration:</strong> All events are free to attend. Full member registration with calendar sync and reminders is coming in Phase 4. For now, follow us or check back for registration links as each event date approaches.
+        <p class="text-sm text-sky-700">
+          <strong>All events are free to attend.</strong> Sign in to register and receive a confirmation email. Your registered events appear in your <a href="/dashboard/events" class="underline font-medium">dashboard</a>.
         </p>
       </div>
     </section>
@@ -97,7 +97,7 @@ const pastEvents = allEvents
 
         <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {pastEvents.map(event => (
-            <EventCard event={event.data} />
+            <EventCard event={event.data} slug={event.id} />
           ))}
         </div>
       </section>
