@@ -1,0 +1,170 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import Navbar from '../../components/Navbar.astro'
+import { getCollection } from 'astro:content'
+import { createClient } from '../../lib/supabase-server'
+
+export const prerender = false
+
+const supabase = createClient(Astro)
+const {
+  data: { user },
+} = await supabase.auth.getUser()
+
+const { data: registrations } = await supabase
+  .from('event_registrations')
+  .select('event_slug, status, registered_at')
+  .eq('user_id', user?.id)
+  .order('registered_at', { ascending: false })
+
+const allEvents = await getCollection('events')
+
+const enriched = (registrations ?? []).map((reg) => {
+  const eventEntry = allEvents.find((e) => e.id === reg.event_slug)
+  return { ...reg, event: eventEntry?.data ?? null }
+})
+
+const upcoming = enriched.filter((r) => r.status === 'confirmed' && r.event?.status === 'upcoming')
+const history = enriched.filter((r) => r.status === 'cancelled' || r.event?.status === 'past')
+---
+
+<Layout title="My Events — InspireSaplingAI">
+  <Navbar user={user} />
+  <div class="min-h-screen bg-gray-50 pt-24 pb-12">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+      <!-- Header -->
+      <div class="flex items-center gap-3 mb-8">
+        <a
+          href="/dashboard"
+          class="text-gray-400 hover:text-gray-600 transition-colors"
+          aria-label="Back to dashboard"
+        >
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+        </a>
+        <h1 class="text-2xl font-bold text-gray-900">My Events</h1>
+      </div>
+
+      <!-- Upcoming Registrations -->
+      <section class="mb-10">
+        <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">
+          Upcoming ({upcoming.length})
+        </h2>
+
+        {upcoming.length === 0 ? (
+          <div class="bg-white rounded-2xl border border-gray-100 p-10 text-center">
+            <p class="text-4xl mb-3">📅</p>
+            <p class="text-gray-600 font-medium">No upcoming registrations yet</p>
+            <a href="/events" class="mt-4 inline-block text-sm text-primary-600 hover:underline font-medium">
+              Browse events →
+            </a>
+          </div>
+        ) : (
+          <ul class="space-y-4">
+            {upcoming.map((reg) => (
+              <li class="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex items-start justify-between gap-4">
+                <div class="flex-1 min-w-0">
+                  <p class="font-semibold text-gray-900 truncate">
+                    {reg.event?.title ?? reg.event_slug}
+                  </p>
+                  {reg.event?.date && (
+                    <p class="text-sm text-gray-500 mt-0.5">
+                      {new Date(reg.event.date + 'T00:00:00').toLocaleDateString('en-US', {
+                        weekday: 'short',
+                        month: 'long',
+                        day: 'numeric',
+                        year: 'numeric',
+                      })}
+                      {reg.event.time && ` · ${reg.event.time}`}
+                    </p>
+                  )}
+                  {reg.event?.location && (
+                    <p class="text-xs text-gray-400 mt-0.5">{reg.event.location}</p>
+                  )}
+                  <span class="inline-block mt-2 px-2 py-0.5 text-xs font-medium rounded-full bg-emerald-100 text-emerald-700">
+                    Confirmed
+                  </span>
+                </div>
+                <button
+                  type="button"
+                  data-cancel-slug={reg.event_slug}
+                  class="cancel-btn flex-shrink-0 text-sm text-red-400 hover:text-red-600 font-medium transition-colors"
+                >
+                  Cancel
+                </button>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <!-- Past & Cancelled -->
+      {history.length > 0 && (
+        <section>
+          <h2 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-4">
+            Past & Cancelled ({history.length})
+          </h2>
+          <ul class="space-y-3">
+            {history.map((reg) => (
+              <li class="bg-white rounded-2xl border border-gray-100 p-5 flex items-center justify-between gap-4 opacity-60">
+                <div class="flex-1 min-w-0">
+                  <p class="font-medium text-gray-700 truncate">
+                    {reg.event?.title ?? reg.event_slug}
+                  </p>
+                  {reg.event?.date && (
+                    <p class="text-xs text-gray-400 mt-0.5">
+                      {new Date(reg.event.date + 'T00:00:00').toLocaleDateString('en-US', {
+                        month: 'long',
+                        day: 'numeric',
+                        year: 'numeric',
+                      })}
+                    </p>
+                  )}
+                </div>
+                <span
+                  class={`text-xs font-medium px-2.5 py-0.5 rounded-full ${
+                    reg.status === 'cancelled'
+                      ? 'bg-red-50 text-red-500'
+                      : 'bg-gray-100 text-gray-400'
+                  }`}
+                >
+                  {reg.status === 'cancelled' ? 'Cancelled' : 'Ended'}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+    </div>
+  </div>
+</Layout>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('.cancel-btn').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const slug = btn.dataset.cancelSlug
+      if (!slug) return
+      if (!confirm('Cancel your registration for this event?')) return
+
+      btn.disabled = true
+      btn.textContent = 'Cancelling…'
+
+      const res = await fetch('/api/events/register', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ slug }),
+      })
+
+      if (res.ok) {
+        window.location.reload()
+      } else {
+        btn.disabled = false
+        btn.textContent = 'Cancel'
+        alert('Could not cancel registration. Please try again.')
+      }
+    })
+  })
+</script>

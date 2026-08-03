@@ -15,9 +15,10 @@ interface EventData {
 
 interface Props {
   event: EventData;
+  slug?: string;
 }
 
-const { event } = Astro.props;
+const { event, slug } = Astro.props;
 
 const typeColors: Record<string, string> = {
   workshop: 'bg-blue-100 text-blue-700',
@@ -114,33 +115,117 @@ const yearNum = dateObj.getFullYear();
         </span>
       )
     ) : (
-      <div>
-        {event.external_url ? (
-          <a
-            href={event.external_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl bg-primary-600 text-white text-sm font-semibold hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
-          >
-            Register Now
+      <div class="register-wrapper" data-slug={slug}>
+        {/* Registered state — hidden by default, revealed via JS */}
+        <div class="registered-state hidden">
+          <span class="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl bg-emerald-100 text-emerald-700 text-sm font-semibold">
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
             </svg>
-          </a>
-        ) : (
-          <button
-            disabled
-            class="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl bg-primary-50 text-primary-300 text-sm font-semibold cursor-not-allowed border border-primary-100"
-          >
-            Registration Opening Soon
-          </button>
-        )}
-        {event.registration_required && (
-          <p class="text-center text-xs text-gray-400 mt-2">
-            🔒 Full member registration coming in Phase 4
-          </p>
-        )}
+            Registered
+          </span>
+        </div>
+
+        {/* Default / action state */}
+        <div class="default-state">
+          {event.external_url ? (
+            <a
+              href={event.external_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl bg-primary-600 text-white text-sm font-semibold hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+            >
+              Register Now
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </a>
+          ) : slug ? (
+            <button
+              type="button"
+              class="register-btn inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl bg-primary-600 text-white text-sm font-semibold hover:bg-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+            >
+              Register Now
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
+            </button>
+          ) : (
+            <button
+              disabled
+              class="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl bg-primary-50 text-primary-300 text-sm font-semibold cursor-not-allowed border border-primary-100"
+            >
+              Registration Opening Soon
+            </button>
+          )}
+        </div>
       </div>
     )}
   </div>
 </article>
+
+<script>
+  function showRegistered(wrapper: HTMLElement) {
+    const defaultState = wrapper.querySelector<HTMLElement>('.default-state')
+    const registeredState = wrapper.querySelector<HTMLElement>('.registered-state')
+    if (defaultState) defaultState.classList.add('hidden')
+    if (registeredState) registeredState.classList.remove('hidden')
+  }
+
+  async function initRegistrationButtons() {
+    const wrappers = document.querySelectorAll<HTMLElement>('.register-wrapper[data-slug]')
+    if (wrappers.length === 0) return
+
+    // Fetch the current user's registrations to pre-mark buttons
+    try {
+      const res = await fetch('/api/events/my-registrations')
+      if (res.ok) {
+        const { slugs } = (await res.json()) as { slugs: string[] }
+        wrappers.forEach((wrapper) => {
+          if (slugs.includes(wrapper.dataset.slug ?? '')) {
+            showRegistered(wrapper)
+          }
+        })
+      }
+    } catch {
+      // Network failure — buttons stay in default state
+    }
+
+    // Wire register button clicks
+    wrappers.forEach((wrapper) => {
+      const btn = wrapper.querySelector<HTMLButtonElement>('.register-btn')
+      if (!btn) return
+
+      btn.addEventListener('click', async () => {
+        const slug = wrapper.dataset.slug
+        if (!slug) return
+
+        btn.disabled = true
+        btn.textContent = 'Registering…'
+
+        const res = await fetch('/api/events/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ slug }),
+        })
+
+        if (res.status === 401) {
+          window.location.href = `/auth/login?next=/events`
+          return
+        }
+
+        if (res.ok || res.status === 409) {
+          // 409 means already registered — show confirmed state anyway
+          showRegistered(wrapper)
+        } else {
+          btn.disabled = false
+          btn.textContent = 'Register Now'
+          alert('Registration failed. Please try again.')
+        }
+      })
+    })
+  }
+
+  // Run after DOM is ready (Astro script tags run after DOM parse)
+  initRegistrationButtons()
+</script>

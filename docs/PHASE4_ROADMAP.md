@@ -222,11 +222,11 @@ npm install @astrojs/cloudflare @supabase/supabase-js @supabase/ssr
 - The `@astrojs/cloudflare` adapter runs on V8 isolates (not full Node.js) — use `fetch`, Web Crypto API, and Web standard APIs; avoid Node.js-specific built-ins
 
 ### 4.3 Verification Checklist
-- [ ] `npm run build` — 0 errors
-- [ ] Sign up with a new email → confirmation email arrives → click link → redirected to `/dashboard`
-- [ ] Log out → `/dashboard` redirects to `/auth/login`
-- [ ] Log in again → redirected back to `/dashboard`
-- [ ] `profiles` row exists in Supabase for the new user
+- [X] `npm run build` — 0 errors
+- [X] Sign up with a new email → confirmation email arrives → click link → redirected to `/dashboard`
+- [X] Log out → `/dashboard` redirects to `/auth/login`
+- [X] Log in again → redirected back to `/dashboard`
+- [X] `profiles` row exists in Supabase for the new user
 
 ---
 
@@ -236,7 +236,7 @@ npm install @astrojs/cloudflare @supabase/supabase-js @supabase/ssr
 > **Branch:** `feat/phase-4b-events`
 
 ### 5.1 👤 Manual Steps
-- Complete pre-flight 1.3 (Resend) and add `RESEND_API_KEY` to Vercel env vars
+- Complete pre-flight 1.3 (Resend) and add `RESEND_API_KEY` to **Cloudflare Pages** env vars (Project → Settings → Environment Variables)
 - Run this SQL in Supabase SQL Editor to create the table and RLS (see Section 11)
 
 ### 5.2 🤖 Agent Steps
