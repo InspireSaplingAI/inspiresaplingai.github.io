@@ -1,5 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
+
+const user = Astro.locals.user;
 
 const roles = [
   {
@@ -45,6 +48,7 @@ const roles = [
   title="Volunteer | InspireSaplingAI"
   description="Volunteer with InspireSaplingAI as a content writer, event organizer, mentor, developer, or outreach coordinator. Online application coming soon."
 >
+  <Navbar user={user} />
   <!-- Hero -->
   <section class="bg-gradient-to-br from-emerald-900 via-emerald-800 to-indigo-900 pt-32 pb-20 px-4 text-white text-center">
     <div class="max-w-3xl mx-auto">

@@ -1,5 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+
+const user = Astro.locals.user;
 
 const impactItems = [
   { icon: '🎓', label: 'Free AI workshops for students', detail: 'Covers venue, equipment, and materials' },
@@ -13,6 +16,7 @@ const impactItems = [
   title="Donate | InspireSaplingAI"
   description="Support InspireSaplingAI's mission to make AI education free and accessible. One-time and recurring donations coming soon."
 >
+  <Navbar user={user} />
   <!-- Hero -->
   <section class="bg-gradient-to-br from-emerald-900 via-emerald-800 to-indigo-900 pt-32 pb-20 px-4 text-white text-center">
     <div class="max-w-3xl mx-auto">

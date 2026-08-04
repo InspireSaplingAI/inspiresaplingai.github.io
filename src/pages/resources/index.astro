@@ -1,8 +1,10 @@
 ---
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
 import ResourceCard from '../../components/resources/ResourceCard.astro';
 
+const user = Astro.locals.user;
 const allResources = await getCollection('resources');
 const resources = allResources.sort(
   (a, b) => b.data.published_at.localeCompare(a.data.published_at)
@@ -17,6 +19,7 @@ const advancedCount = resources.filter(r => r.data.level === 'advanced').length;
   title="Learning Resources | InspireSaplingAI"
   description="Free AI learning resources for students and educators — from beginner explainers to advanced research papers. Articles, videos, and curated links."
 >
+  <Navbar user={user} />
   <!-- Hero -->
   <section class="bg-gradient-to-br from-emerald-900 via-emerald-800 to-indigo-900 pt-32 pb-20 px-4 text-white">
     <div class="max-w-4xl mx-auto text-center">
