@@ -159,6 +159,10 @@ const history = enriched.filter((r) => r.status === 'cancelled' || r.event?.stat
       })
 
       if (res.ok) {
+        const data = await res.json().catch(() => ({}))
+        if (data.email_error) {
+          console.warn('[Dashboard/Events] Cancellation succeeded but email failed:', data.email_error)
+        }
         window.location.reload()
       } else {
         btn.disabled = false

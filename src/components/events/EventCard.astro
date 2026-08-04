@@ -217,6 +217,12 @@ const yearNum = dateObj.getFullYear();
         if (res.ok || res.status === 409) {
           // 409 means already registered — show confirmed state anyway
           showRegistered(wrapper)
+          if (res.ok) {
+            const data = await res.json().catch(() => ({}))
+            if (data.email_error) {
+              console.warn('[EventCard] Registration succeeded but email failed:', data.email_error)
+            }
+          }
         } else {
           btn.disabled = false
           btn.textContent = 'Register Now'

@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/Navbar.astro';
 
 export async function getStaticPaths() {
   const resources = await getCollection('resources', ({ data }) => data.type === 'article');
@@ -23,9 +24,12 @@ const lc = levelConfig[level];
 const formattedDate = new Date(published_at + 'T00:00:00').toLocaleDateString('en-US', {
   year: 'numeric', month: 'long', day: 'numeric',
 });
+
+const user = Astro.locals.user;
 ---
 
 <Layout title={`${title} | InspireSaplingAI Resources`} description={description}>
+  <Navbar user={user} />
   <!-- Header -->
   <div class="bg-gradient-to-br from-emerald-900 via-emerald-800 to-indigo-900 pt-32 pb-16 px-4 text-white">
     <div class="max-w-3xl mx-auto">

@@ -1,5 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+
+const user = Astro.locals.user;
 
 const features = [
   {
@@ -57,6 +60,7 @@ const liveFeatures = [
   title="Membership | InspireSaplingAI"
   description="Join InspireSaplingAI as a member to access AI career tools, 1-on-1 coaching, community forums, and exclusive events. Platform launching soon."
 >
+  <Navbar user={user} />
   <!-- Hero -->
   <section class="bg-gradient-to-br from-indigo-900 via-emerald-900 to-indigo-900 pt-32 pb-20 px-4 text-white text-center">
     <div class="max-w-3xl mx-auto">
