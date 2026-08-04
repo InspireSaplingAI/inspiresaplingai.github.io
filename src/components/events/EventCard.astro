@@ -118,12 +118,22 @@ const yearNum = dateObj.getFullYear();
       <div class="register-wrapper" data-slug={slug}>
         {/* Registered state — hidden by default, revealed via JS */}
         <div class="registered-state hidden">
-          <span class="inline-flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl bg-emerald-100 text-emerald-700 text-sm font-semibold">
-            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-            </svg>
-            Registered
-          </span>
+          <div class="flex items-center gap-2 w-full">
+            <span class="inline-flex items-center justify-center gap-2 flex-1 px-4 py-2.5 rounded-xl bg-emerald-100 text-emerald-700 text-sm font-semibold">
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+              </svg>
+              Registered
+            </span>
+            <button
+              type="button"
+              class="unregister-btn px-3 py-2.5 rounded-xl text-xs font-medium text-gray-400 hover:text-red-500 hover:bg-red-50 transition-colors border border-gray-200 hover:border-red-200"
+              aria-label="Cancel registration"
+              title="Cancel registration"
+            >
+              Unregister
+            </button>
+          </div>
         </div>
 
         {/* Default / action state */}
@@ -227,6 +237,46 @@ const yearNum = dateObj.getFullYear();
           btn.disabled = false
           btn.textContent = 'Register Now'
           alert('Registration failed. Please try again.')
+        }
+      })
+
+      // Wire unregister button clicks
+      const unregBtn = wrapper.querySelector<HTMLButtonElement>('.unregister-btn')
+      if (!unregBtn) return
+
+      unregBtn.addEventListener('click', async () => {
+        const slug = wrapper.dataset.slug
+        if (!slug) return
+        if (!confirm('Cancel your registration for this event?')) return
+
+        unregBtn.disabled = true
+        unregBtn.textContent = '…'
+
+        const res = await fetch('/api/events/register', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ slug }),
+        })
+
+        if (res.ok) {
+          const data = await res.json().catch(() => ({}))
+          if (data.email_error) {
+            console.warn('[EventCard] Cancellation succeeded but email failed:', data.email_error)
+          }
+          // Flip back to default (Register Now) state
+          const defaultState = wrapper.querySelector<HTMLElement>('.default-state')
+          const registeredState = wrapper.querySelector<HTMLElement>('.registered-state')
+          if (registeredState) registeredState.classList.add('hidden')
+          if (defaultState) defaultState.classList.remove('hidden')
+          const registerBtn = wrapper.querySelector<HTMLButtonElement>('.register-btn')
+          if (registerBtn) {
+            registerBtn.disabled = false
+            registerBtn.querySelector('span') ? (registerBtn.querySelector('span')!.textContent = 'Register Now') : null
+          }
+        } else {
+          unregBtn.disabled = false
+          unregBtn.textContent = 'Unregister'
+          alert('Could not cancel registration. Please try again.')
         }
       })
     })
