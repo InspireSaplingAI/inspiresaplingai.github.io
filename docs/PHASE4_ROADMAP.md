@@ -63,9 +63,10 @@
 
 ### 1.3 Resend (required for Phase 4B — email confirmations)
 - [X] Go to [resend.com](https://resend.com) → Sign up (free tier: 100 emails/day, 3,000/month)
-- [X] Verify a sending domain (requires DNS access to your domain, OR use `onboarding@resend.dev` for testing)
 - [X] Create an API key → copy as `RESEND_API_KEY`
 - [X] Add to Cloudflare Pages environment variables
+- [ ] **For testing only:** Add `RESEND_FROM_EMAIL = onboarding@resend.dev` to Cloudflare Pages env vars — emails only deliver to the Resend account owner's email address
+- [ ] **For production:** Go to Resend → **Domains** → **Add Domain** → verify `inspiresaplingai.org` via DNS records → once verified, remove `RESEND_FROM_EMAIL` override (code defaults to `noreply@inspiresaplingai.org`)
 
 ### 1.4 OpenAI (required for Phase 4D)
 - [X] Go to [platform.openai.com](https://platform.openai.com) → Sign up / log in
