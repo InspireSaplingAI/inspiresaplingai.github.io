@@ -74,7 +74,10 @@ export const POST: APIRoute = async (context) => {
     }
 
     // Send confirmation email (non-fatal if it fails)
-    const resendKey = import.meta.env.RESEND_API_KEY
+    // Use runtime env (context.locals.runtime.env) for secrets — import.meta.env is
+    // statically inlined at build time and won't see Cloudflare encrypted secrets.
+    const runtimeEnv = context.locals.runtime?.env ?? {}
+    const resendKey = runtimeEnv.RESEND_API_KEY
     let emailError: string | null = null
 
     if (resendKey && user.email) {
@@ -103,7 +106,7 @@ export const POST: APIRoute = async (context) => {
 
                 // RESEND_FROM_EMAIL can be overridden via env var.
                 // Use "onboarding@resend.dev" for testing before your domain is verified.
-                const fromEmail = import.meta.env.RESEND_FROM_EMAIL ?? 'InspireSaplingAI <noreply@inspiresaplingai.org>'
+                const fromEmail = runtimeEnv.RESEND_FROM_EMAIL ?? 'InspireSaplingAI <noreply@inspiresaplingai.org>'
 
                 const resend = new Resend(resendKey)
                 const { error: sendError } = await resend.emails.send({
@@ -190,7 +193,8 @@ export const PATCH: APIRoute = async (context) => {
     }
 
     // Send cancellation confirmation email (non-fatal)
-    const resendKey = import.meta.env.RESEND_API_KEY
+    const runtimeEnv = context.locals.runtime?.env ?? {}
+    const resendKey = runtimeEnv.RESEND_API_KEY
     let emailError: string | null = null
 
     if (resendKey && user.email) {
@@ -208,7 +212,7 @@ export const PATCH: APIRoute = async (context) => {
                 const userName = profile?.name ?? user.email.split('@')[0]
                 const event = eventEntry.data
                 const fromEmail =
-                    import.meta.env.RESEND_FROM_EMAIL ?? 'InspireSaplingAI <noreply@inspiresaplingai.org>'
+                    runtimeEnv.RESEND_FROM_EMAIL ?? 'InspireSaplingAI <noreply@inspiresaplingai.org>'
 
                 const resend = new Resend(resendKey)
                 const { error: sendError } = await resend.emails.send({
