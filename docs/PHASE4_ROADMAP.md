@@ -68,8 +68,6 @@
 - [ ] **For testing only:** Add `RESEND_FROM_EMAIL = onboarding@resend.dev` to Cloudflare Pages env vars — emails only deliver to the Resend account owner's email address
 - [ ] **For production:** Go to Resend → **Domains** → **Add Domain** → verify `inspiresaplingai.org` via DNS records → once verified, remove `RESEND_FROM_EMAIL` override (code defaults to `noreply@inspiresaplingai.org`)
 
-> ⚠️ **Cloudflare env var scope:** Cloudflare Pages has separate **Production** and **Preview** environment variable sets (Settings → Environment Variables). Variables added under "Preview" only apply to non-main branch deploys. Always add secrets to **Production** as well, or they will show as "not configured" on the live site.
-
 ### 1.4 OpenAI (required for Phase 4D)
 - [X] Go to [platform.openai.com](https://platform.openai.com) → Sign up / log in
 - [X] Navigate to **API Keys** → Create new secret key → copy as `OPENAI_API_KEY`
@@ -279,11 +277,11 @@ We'll send a reminder 24 hours before the event.
 ```
 
 ### 5.3 Verification Checklist
-- [ ] Log in → go to `/events` → click Register → `event_registrations` row created in Supabase
-- [ ] Confirmation email received
-- [ ] Button shows "Registered ✓" on return visit
-- [ ] Can't register for the same event twice (API returns 409)
-- [ ] Unauthenticated user clicking Register is redirected to login then back
+- [X] Log in → go to `/events` → click Register → `event_registrations` row created in Supabase
+- [X] Confirmation email received
+- [X] Button shows "Registered ✓" on return visit
+- [X] Can't register for the same event twice (API returns 409)
+- [X] Unauthenticated user clicking Register is redirected to login then back
 
 ---
 
