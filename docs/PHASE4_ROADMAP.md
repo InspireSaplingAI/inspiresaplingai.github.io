@@ -576,6 +576,28 @@ CREATE POLICY "Users can update own registrations" ON public.event_registrations
 -- PHASE 4D: Resume Analyses
 -- ============================================================
 
+-- Storage RLS policies for the `resumes` bucket
+-- (Required for resume uploads to work — the bucket must be private)
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('resumes', 'resumes', false)
+ON CONFLICT (id) DO NOTHING;
+
+CREATE POLICY "Users can upload their own resumes"
+ON storage.objects FOR INSERT TO authenticated
+WITH CHECK (bucket_id = 'resumes' AND (storage.foldername(name))[1] = auth.uid()::text);
+
+CREATE POLICY "Users can read their own resumes"
+ON storage.objects FOR SELECT TO authenticated
+USING (bucket_id = 'resumes' AND (storage.foldername(name))[1] = auth.uid()::text);
+
+CREATE POLICY "Users can update their own resumes"
+ON storage.objects FOR UPDATE TO authenticated
+USING (bucket_id = 'resumes' AND (storage.foldername(name))[1] = auth.uid()::text);
+
+CREATE POLICY "Users can delete their own resumes"
+ON storage.objects FOR DELETE TO authenticated
+USING (bucket_id = 'resumes' AND (storage.foldername(name))[1] = auth.uid()::text);
+
 CREATE TABLE IF NOT EXISTS public.resume_analyses (
   id              UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id         UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
