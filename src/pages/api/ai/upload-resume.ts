@@ -61,8 +61,14 @@ export const POST: APIRoute = async (context) => {
 
     const timestamp = Date.now()
     const ext = file.type === 'application/pdf' ? 'pdf' : 'docx'
-    const safeName = (file.name || 'resume').replace(/[^a-zA-Z0-9._-]/g, '_').slice(-50)
-    const storagePath = `resumes/${user.id}/${timestamp}-${safeName}.${ext}`
+    // Strip an existing extension so "resume.pdf" doesn't become "resume.pdf.pdf"
+    const safeName = (file.name || 'resume')
+        .replace(/\.[^.]+$/, '')                    // remove existing extension
+        .replace(/[^a-zA-Z0-9._-]/g, '_')           // sanitize
+        .slice(-50) || 'resume'
+    // Path is relative to the `resumes` bucket — the first folder MUST be the
+    // user's UUID so the storage RLS policies (foldername(name))[1] check passes.
+    const storagePath = `${user.id}/${timestamp}-${safeName}.${ext}`
 
     const { error: uploadError } = await supabase.storage
         .from('resumes')
