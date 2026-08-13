@@ -307,7 +307,7 @@ We'll send a reminder 24 hours before the event.
 No new packages. No API routes. No database tables (Donorbox handles all of this internally). One-page change.
 
 ### 6.3 Verification Checklist
-- [ ] `/donate` shows the Donorbox widget
+- [X] `/donate` shows the Donorbox widget
 - [ ] Test donation completes (use Donorbox test mode)
 - [ ] Donor receives a receipt email from Donorbox
 
