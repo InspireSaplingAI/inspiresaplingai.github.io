@@ -8,6 +8,8 @@ declare namespace App {
                 [key: string]: unknown
                 RESEND_API_KEY?: string
                 RESEND_FROM_EMAIL?: string
+                OPENAI_API_KEY?: string
+                RAPIDAPI_KEY?: string
             }
         }
     }

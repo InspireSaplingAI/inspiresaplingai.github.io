@@ -17,7 +17,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
 
     const url = new URL(request.url)
     const query = url.searchParams.get('query')?.trim()
-    const location = url.searchParams.get('location')?.trim() || 'United States'
+    const location = url.searchParams.get('location')?.trim()
     const page = url.searchParams.get('page') || '1'
     const numPages = url.searchParams.get('num_pages') || '1'
 
@@ -28,14 +28,20 @@ export const GET: APIRoute = async ({ request, locals }) => {
         })
     }
 
+    // JSearch v2 accepts a `location` param and a `country` filter.
+    // Only include `location` when the user actually provides one — sending a
+    // broad string like "United States" alongside country=us can cause
+    // misleading empty results.
     const params = new URLSearchParams({
         query,
-        location,
         page,
         num_pages: numPages,
         country: 'us',
-        date_posted: 'week',
+        date_posted: 'all', // "week" was too restrictive; "all" matches the verified working request
     })
+    if (location) {
+        params.set('location', location)
+    }
 
     let jobs: unknown[] = []
     let lastError: string | null = null
@@ -43,21 +49,13 @@ export const GET: APIRoute = async ({ request, locals }) => {
     // Per JSearch docs: retry on 429 (rate limit) and 5XX (server errors)
     for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
         try {
-            const resp = await fetch(`https://${RAPIDAPI_HOST}/search?${params.toString()}`, {
+            const resp = await fetch(`https://${RAPIDAPI_HOST}/search-v2?${params.toString()}`, {
                 headers: {
+                    'Content-Type': 'application/json',
                     'x-rapidapi-key': rapidApiKey,
                     'x-rapidapi-host': RAPIDAPI_HOST,
                 },
             })
-
-            // JSearch returns 404 when no jobs match the query/location filters.
-            // Treat that as an empty result set rather than a hard error.
-            if (resp.status === 404) {
-                return new Response(
-                    JSON.stringify({ jobs: [], total: 0, message: 'No jobs found. Try a different title or location.' }),
-                    { status: 200, headers: { 'Content-Type': 'application/json' } }
-                )
-            }
 
             // Retry on rate-limit (429) and server errors (5XX)
             if (resp.status === 429 || resp.status >= 500) {
@@ -86,7 +84,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
 
             const json = (await resp.json()) as {
                 status?: string
-                data?: unknown[]
+                data?: { jobs?: unknown[]; cursor?: string }
                 error?: { message?: string; code?: number }
             }
 
@@ -101,7 +99,9 @@ export const GET: APIRoute = async ({ request, locals }) => {
                 )
             }
 
-            jobs = json.data ?? []
+            // JSearch v2 returns data as an object: { jobs: [...] }
+            // (when no jobs match, it returns 200 with an empty jobs array — not 404)
+            jobs = json.data?.jobs ?? []
             break
         } catch (err) {
             lastError = err instanceof Error ? err.message : 'unknown_error'
