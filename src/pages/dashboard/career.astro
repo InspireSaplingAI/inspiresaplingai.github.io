@@ -139,6 +139,17 @@ const FREE_LIMIT = 3
                 </form>
 
                 <div id="jobs-results" class="mt-6 space-y-4"></div>
+
+                <button
+                    type="button"
+                    id="jobs-load-more"
+                    class="hidden mt-6 w-full sm:w-auto inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-gray-300 text-gray-700 text-sm font-semibold hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 13l-7 7-7-7m14-8l-7 7-7-7" />
+                    </svg>
+                    View More Jobs
+                </button>
             </section>
         </div>
     </div>
@@ -282,6 +293,48 @@ const FREE_LIMIT = 3
     const jobsForm = document.getElementById('jobs-form')
     const jobsBtn = document.getElementById('jobs-btn')
     const jobsResults = document.getElementById('jobs-results')
+    const jobsLoadMore = document.getElementById('jobs-load-more')
+
+    // State for the current active search (so "View More" appends to the same query)
+    let currentJobQuery = ''
+    let currentJobLocation = ''
+    let currentJobPage = 0
+
+    function renderJobCard(job: any): string {
+        return `
+            <a href="${job.url}" target="_blank" rel="noopener noreferrer" class="block p-4 rounded-xl border border-gray-200 hover:border-primary-300 hover:bg-primary-50 transition-colors">
+                <div class="flex items-start justify-between gap-4">
+                    <div class="min-w-0 flex-1">
+                        <p class="font-semibold text-gray-900 truncate">${job.title}</p>
+                        <p class="text-sm text-gray-500">${job.company}</p>
+                        <p class="text-xs text-gray-400 mt-1">${job.location}</p>
+                    </div>
+                    <div class="flex-shrink-0 text-right">
+                        ${job.salary ? `<p class="text-sm font-medium text-primary-600">${job.salary}</p>` : ''}
+                        <p class="text-xs text-gray-400">${job.source}</p>
+                    </div>
+                </div>
+            </a>
+        `
+    }
+
+    async function fetchJobPage(query: string, location: string, page: number): Promise<{ jobs: any[]; hasMore: boolean } | null> {
+        const params = new URLSearchParams({ query, page: String(page) })
+        if (location) params.set('location', location)
+        const res = await fetch(`/api/jobs/search?${params.toString()}`)
+
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}))
+            throw new Error(err.message || 'Job search failed.')
+        }
+
+        const data = await res.json()
+        return { jobs: data.jobs, hasMore: data.hasMore }
+    }
+
+    function setLoadMoreVisible(visible: boolean) {
+        jobsLoadMore!.classList.toggle('hidden', !visible)
+    }
 
     jobsForm?.addEventListener('submit', async (e) => {
         e.preventDefault()
@@ -292,44 +345,55 @@ const FREE_LIMIT = 3
         jobsBtn!.disabled = true
         jobsBtn!.textContent = 'Searching…'
         jobsResults!.innerHTML = '<p class="text-sm text-gray-400">Loading jobs…</p>'
+        setLoadMoreVisible(false)
 
         try {
-            const params = new URLSearchParams({ query })
-            if (location) params.set('location', location)
-            const res = await fetch(`/api/jobs/search?${params.toString()}`)
+            const result = await fetchJobPage(query, location, 1)
+            currentJobQuery = query
+            currentJobLocation = location
+            currentJobPage = 1
 
-            if (!res.ok) {
-                const err = await res.json().catch(() => ({}))
-                jobsResults!.innerHTML = `<p class="text-sm text-red-500">${err.message || 'Job search failed.'}</p>`
-                return
-            }
-
-            const data = await res.json()
-            if (data.jobs.length === 0) {
+            if (result.jobs.length === 0) {
                 jobsResults!.innerHTML = '<p class="text-sm text-gray-400">No jobs found. Try a different title or location.</p>'
+                setLoadMoreVisible(false)
                 return
             }
 
-            jobsResults!.innerHTML = data.jobs.map((job) => `
-                <a href="${job.url}" target="_blank" rel="noopener noreferrer" class="block p-4 rounded-xl border border-gray-200 hover:border-primary-300 hover:bg-primary-50 transition-colors">
-                    <div class="flex items-start justify-between gap-4">
-                        <div class="min-w-0 flex-1">
-                            <p class="font-semibold text-gray-900 truncate">${job.title}</p>
-                            <p class="text-sm text-gray-500">${job.company}</p>
-                            <p class="text-xs text-gray-400 mt-1">${job.location}</p>
-                        </div>
-                        <div class="flex-shrink-0 text-right">
-                            ${job.salary ? `<p class="text-sm font-medium text-primary-600">${job.salary}</p>` : ''}
-                            <p class="text-xs text-gray-400">${job.source}</p>
-                        </div>
-                    </div>
-                </a>
-            `).join('')
-        } catch {
-            jobsResults!.innerHTML = '<p class="text-sm text-red-500">Network error. Please try again.</p>'
+            jobsResults!.innerHTML = result.jobs.map(renderJobCard).join('')
+            setLoadMoreVisible(result.hasMore)
+        } catch (err) {
+            jobsResults!.innerHTML = `<p class="text-sm text-red-500">${err instanceof Error ? err.message : 'Network error. Please try again.'}</p>`
+            setLoadMoreVisible(false)
         } finally {
             jobsBtn!.disabled = false
             jobsBtn!.textContent = 'Search Jobs'
+        }
+    })
+
+    jobsLoadMore?.addEventListener('click', async () => {
+        if (!currentJobQuery) return
+
+        jobsLoadMore!.disabled = true
+        jobsLoadMore!.textContent = 'Loading more…'
+
+        try {
+            const nextPage = currentJobPage + 1
+            const result = await fetchJobPage(currentJobQuery, currentJobLocation, nextPage)
+
+            if (result.jobs.length > 0) {
+                // Append the new page of results to the existing list
+                jobsResults!.insertAdjacentHTML('beforeend', result.jobs.map(renderJobCard).join(''))
+            }
+
+            currentJobPage = nextPage
+            setLoadMoreVisible(result.hasMore)
+        } catch (err) {
+            // Keep existing results; just surface the error below the list
+            setLoadMoreVisible(false)
+            jobsResults!.insertAdjacentHTML('beforeend', `<p class="text-sm text-red-500">${err instanceof Error ? err.message : 'Network error. Please try again.'}</p>`)
+        } finally {
+            jobsLoadMore!.disabled = false
+            jobsLoadMore!.textContent = 'View More Jobs'
         }
     })
 </script>

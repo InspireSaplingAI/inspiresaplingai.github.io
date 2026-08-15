@@ -18,7 +18,7 @@ export const GET: APIRoute = async ({ request, locals }) => {
     const url = new URL(request.url)
     const query = url.searchParams.get('query')?.trim()
     const location = url.searchParams.get('location')?.trim()
-    const page = url.searchParams.get('page') || '1'
+    const page = String(Math.max(1, parseInt(url.searchParams.get('page') || '1', 10) || 1))
     const numPages = url.searchParams.get('num_pages') || '1'
 
     if (!query) {
@@ -120,8 +120,12 @@ export const GET: APIRoute = async ({ request, locals }) => {
         )
     }
 
+    // JSearch v2 returns ~10 jobs per page (when num_pages=1).
+    // Don't hard-cap the results here — the frontend handles pagination.
+    const FULL_PAGE_SIZE = 10
+
     // Map to a safe subset of fields for the frontend
-    const mapped = jobs.slice(0, 10).map((j) => {
+    const mapped = jobs.map((j) => {
         const job = j as Record<string, unknown>
         const city = job?.job_city as string | undefined
         const country = job?.job_country as string | undefined
@@ -138,8 +142,12 @@ export const GET: APIRoute = async ({ request, locals }) => {
         }
     })
 
+    // A full page of results means there are likely more pages to load.
+    // If a later page returns fewer than a full page, we're at the end.
+    const hasMore = mapped.length >= FULL_PAGE_SIZE
+
     return new Response(
-        JSON.stringify({ jobs: mapped, total: mapped.length }),
+        JSON.stringify({ jobs: mapped, total: mapped.length, page: Number(page), hasMore }),
         {
             status: 200,
             headers: {
