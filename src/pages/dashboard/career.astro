@@ -298,7 +298,8 @@ const FREE_LIMIT = 3
     // State for the current active search (so "View More" appends to the same query)
     let currentJobQuery = ''
     let currentJobLocation = ''
-    let currentJobPage = 0
+    let currentJobCursor: string | null = null
+    const BATCH_SIZE = 5 // each API call pulls up to 5 JSearch pages (~50 jobs)
 
     function renderJobCard(job: any): string {
         return `
@@ -318,9 +319,10 @@ const FREE_LIMIT = 3
         `
     }
 
-    async function fetchJobPage(query: string, location: string, page: number): Promise<{ jobs: any[]; hasMore: boolean } | null> {
-        const params = new URLSearchParams({ query, page: String(page) })
+    async function fetchJobs(query: string, location: string, cursor: string | null): Promise<{ jobs: any[]; cursor: string | null; hasMore: boolean }> {
+        const params = new URLSearchParams({ query, batch: String(BATCH_SIZE) })
         if (location) params.set('location', location)
+        if (cursor) params.set('cursor', cursor)
         const res = await fetch(`/api/jobs/search?${params.toString()}`)
 
         if (!res.ok) {
@@ -329,7 +331,7 @@ const FREE_LIMIT = 3
         }
 
         const data = await res.json()
-        return { jobs: data.jobs, hasMore: data.hasMore }
+        return { jobs: data.jobs, cursor: data.cursor ?? null, hasMore: data.hasMore }
     }
 
     function setLoadMoreVisible(visible: boolean) {
@@ -348,10 +350,10 @@ const FREE_LIMIT = 3
         setLoadMoreVisible(false)
 
         try {
-            const result = await fetchJobPage(query, location, 1)
+            const result = await fetchJobs(query, location, null)
             currentJobQuery = query
             currentJobLocation = location
-            currentJobPage = 1
+            currentJobCursor = result.cursor
 
             if (result.jobs.length === 0) {
                 jobsResults!.innerHTML = '<p class="text-sm text-gray-400">No jobs found. Try a different title or location.</p>'
@@ -371,24 +373,23 @@ const FREE_LIMIT = 3
     })
 
     jobsLoadMore?.addEventListener('click', async () => {
-        if (!currentJobQuery) return
+        if (!currentJobQuery || !currentJobCursor) return
 
         jobsLoadMore!.disabled = true
         jobsLoadMore!.textContent = 'Loading more…'
 
         try {
-            const nextPage = currentJobPage + 1
-            const result = await fetchJobPage(currentJobQuery, currentJobLocation, nextPage)
+            const result = await fetchJobs(currentJobQuery, currentJobLocation, currentJobCursor)
 
             if (result.jobs.length > 0) {
-                // Append the new page of results to the existing list
+                // Append the next batch of results to the existing list
                 jobsResults!.insertAdjacentHTML('beforeend', result.jobs.map(renderJobCard).join(''))
             }
 
-            currentJobPage = nextPage
+            currentJobCursor = result.cursor
             setLoadMoreVisible(result.hasMore)
         } catch (err) {
-            // Keep existing results; just surface the error below the list
+            // Keep existing results; just show the error below the list
             setLoadMoreVisible(false)
             jobsResults!.insertAdjacentHTML('beforeend', `<p class="text-sm text-red-500">${err instanceof Error ? err.message : 'Network error. Please try again.'}</p>`)
         } finally {
