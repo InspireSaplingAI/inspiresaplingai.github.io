@@ -3,6 +3,7 @@ import type { APIRoute } from 'astro'
 export const prerender = false
 
 const RAPIDAPI_HOST = 'jsearch.p.rapidapi.com'
+const MAX_RETRIES = 2
 
 export const GET: APIRoute = async ({ request, locals }) => {
     // RAPIDAPI_KEY is an encrypted secret — read from runtime env
@@ -37,26 +38,84 @@ export const GET: APIRoute = async ({ request, locals }) => {
     })
 
     let jobs: unknown[] = []
-    try {
-        const resp = await fetch(`https://${RAPIDAPI_HOST}/search?${params.toString()}`, {
-            headers: {
-                'x-rapidapi-key': rapidApiKey,
-                'x-rapidapi-host': RAPIDAPI_HOST,
-            },
-        })
+    let lastError: string | null = null
 
-        if (!resp.ok) {
-            return new Response(
-                JSON.stringify({ error: 'job_search_failed', message: `Provider returned ${resp.status}` }),
-                { status: 502, headers: { 'Content-Type': 'application/json' } }
-            )
+    // Per JSearch docs: retry on 429 (rate limit) and 5XX (server errors)
+    for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
+        try {
+            const resp = await fetch(`https://${RAPIDAPI_HOST}/search?${params.toString()}`, {
+                headers: {
+                    'x-rapidapi-key': rapidApiKey,
+                    'x-rapidapi-host': RAPIDAPI_HOST,
+                },
+            })
+
+            // JSearch returns 404 when no jobs match the query/location filters.
+            // Treat that as an empty result set rather than a hard error.
+            if (resp.status === 404) {
+                return new Response(
+                    JSON.stringify({ jobs: [], total: 0, message: 'No jobs found. Try a different title or location.' }),
+                    { status: 200, headers: { 'Content-Type': 'application/json' } }
+                )
+            }
+
+            // Retry on rate-limit (429) and server errors (5XX)
+            if (resp.status === 429 || resp.status >= 500) {
+                lastError = `JSearch returned ${resp.status}`
+                if (attempt < MAX_RETRIES) {
+                    await new Promise((r) => setTimeout(r, 1000 * (attempt + 1)))
+                    continue
+                }
+            }
+
+            if (!resp.ok) {
+                // Try to read the provider's response body for a more specific error
+                let providerMessage = `JSearch returned ${resp.status}`
+                try {
+                    const providerBody = await resp.text()
+                    // Truncate to avoid giant error messages
+                    if (providerBody) providerMessage += `: ${providerBody.slice(0, 300)}`
+                } catch {
+                    // ignore body read failures
+                }
+                return new Response(
+                    JSON.stringify({ error: 'job_search_failed', message: providerMessage }),
+                    { status: 502, headers: { 'Content-Type': 'application/json' } }
+                )
+            }
+
+            const json = (await resp.json()) as {
+                status?: string
+                data?: unknown[]
+                error?: { message?: string; code?: number }
+            }
+
+            // JSearch returns HTTP 200 with status:"ERROR" for some failures
+            if (json.status === 'ERROR') {
+                return new Response(
+                    JSON.stringify({
+                        error: 'job_search_failed',
+                        message: json.error?.message ?? 'JSearch returned an error',
+                    }),
+                    { status: 502, headers: { 'Content-Type': 'application/json' } }
+                )
+            }
+
+            jobs = json.data ?? []
+            break
+        } catch (err) {
+            lastError = err instanceof Error ? err.message : 'unknown_error'
+            if (attempt < MAX_RETRIES) {
+                await new Promise((r) => setTimeout(r, 1000 * (attempt + 1)))
+                continue
+            }
         }
+    }
 
-        const data = (await resp.json()) as { data?: unknown[] }
-        jobs = data.data ?? []
-    } catch (err) {
+    // If all retries failed and we have no jobs, surface the last error
+    if (lastError && jobs.length === 0) {
         return new Response(
-            JSON.stringify({ error: 'job_search_failed', message: err instanceof Error ? err.message : 'unknown_error' }),
+            JSON.stringify({ error: 'job_search_failed', message: lastError }),
             { status: 502, headers: { 'Content-Type': 'application/json' } }
         )
     }
