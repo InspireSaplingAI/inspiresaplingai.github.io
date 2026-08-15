@@ -104,7 +104,7 @@ const { user } = Astro.props
   // render the correct state (user menu / sign out) after the page loads.
   async function hydrateAuth() {
     const supabase = createClient()
-    const { data: { session } } = await supabase.auth.getSession()
+    const { data: { session } } = await supabase.auth.getSession().catch(() => ({ data: { session: null } }))
     if (!session?.user) return
 
     const user = session.user
