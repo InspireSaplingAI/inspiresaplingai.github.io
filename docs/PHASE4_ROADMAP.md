@@ -383,8 +383,8 @@ if (profile.ai_credits_used >= 3) {
 - RLS on `resume_analyses`: users can only SELECT/INSERT their own rows
 
 ### 7.3 Verification Checklist
-- [ ] Upload a PDF resume, set a job title → analysis returns within 10 seconds
-- [ ] Results show strengths, gaps, and rewrite suggestions
+- [X] Upload a PDF resume, set a job title → analysis returns within 10 seconds
+- [X] Results show strengths, gaps, and rewrite suggestions
 - [ ] Usage counter increments correctly
 - [ ] 4th attempt returns a 429 with "free limit reached" message
 - [ ] User cannot access another user's resume via storage path (RLS test)
