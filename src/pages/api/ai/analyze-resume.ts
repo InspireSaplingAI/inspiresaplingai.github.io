@@ -146,17 +146,31 @@ export const POST: APIRoute = async (context) => {
         )
     }
 
-    const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ ai_credits_used: creditsUsed + 1 })
-        .eq('id', user.id)
+    // ============================================================
+    // 🔁 ATOMIC INCREMENT (also fixes double-click race: both requests
+    // would read 0 and write 1; this makes each click persist +1)
+    // ============================================================
+    const { data: incrementData, error: rpcError } = await supabase.rpc('increment_ai_credits', {
+        target_user: user.id,
+    })
 
-    if (updateError) {
-        console.warn('[analyze-resume] Failed to increment credits:', updateError.message)
+    if (rpcError) {
+        return new Response(
+            JSON.stringify({ error: 'increment_failed', message: rpcError.message }),
+            { status: 500, headers: { 'Content-Type': 'application/json' } }
+        )
+    }
+
+    // RLS-silent failure: if UPDATE silently affected 0 rows (data: null), throw a real 500
+    if (incrementData === null) {
+        return new Response(
+            JSON.stringify({ error: 'profile_update_failed' }),
+            { status: 500, headers: { 'Content-Type': 'application/json' } }
+        )
     }
 
     return new Response(
-        JSON.stringify({ analysis: analysisJson, credits_used: creditsUsed + 1 }),
+        JSON.stringify({ analysis: analysisJson, credits_used: incrementData }),
         { status: 200, headers: { 'Content-Type': 'application/json' } }
     )
 }
