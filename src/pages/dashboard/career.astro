@@ -26,6 +26,12 @@ if (profileError) {
 
 const creditsUsed = profile?.ai_credits_used ?? 0
 const FREE_LIMIT = 3
+
+// TEMP DEBUG: show exactly what the server read from the DB (and any error)
+// so we can diagnose "0 of 3 used" without Cloudflare logs (free plan has none).
+const debugRead = profileError
+    ? `DB read FAILED: ${profileError.message}`
+    : `DB read: ${profile?.ai_credits_used ?? 'null'}`
 ---
 
 <Layout title="AI Career Assistant — InspireSaplingAI">
@@ -56,6 +62,8 @@ const FREE_LIMIT = 3
                          style={`width: ${Math.min((creditsUsed / FREE_LIMIT) * 100, 100)}%`}></div>
                 </div>
                 <p class="text-xs text-gray-400 mt-2">Upload your resume and get personalized feedback from AI.</p>
+                <!-- TEMP DEBUG: remove after confirming the read value -->
+                <p class="text-[10px] text-gray-300 mt-1 font-mono">{debugRead}</p>
             </div>
 
             <!-- Resume Upload + Analysis form -->
