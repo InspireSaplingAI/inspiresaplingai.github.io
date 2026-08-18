@@ -9,11 +9,20 @@ const supabase = createClient(Astro)
 const { data: { user } } = await supabase.auth.getUser()
 
 // Fetch the user's credit usage for the counter
-const { data: profile } = await supabase
+const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select('ai_credits_used')
     .eq('id', user?.id)
     .single()
+
+// If the read fails (e.g. missing RLS SELECT policy on `profiles`), log it
+// instead of silently falling back to 0 — it means the counter would show
+// "0 of 3 used" even though the DB may have a real value. If you see this,
+// run `supabase/migrations/20260817_add_ai_credit_persistence.sql` in the
+// Supabase SQL editor (it creates the "Users can view own profile" policy).
+if (profileError) {
+    console.error('[career.astro] Failed to read ai_credits_used:', profileError.message)
+}
 
 const creditsUsed = profile?.ai_credits_used ?? 0
 const FREE_LIMIT = 3
