@@ -548,9 +548,57 @@ CREATE OR REPLACE TRIGGER on_auth_user_created
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Users can view own profile"     ON public.profiles FOR SELECT USING (auth.uid() = id);
 CREATE POLICY "Users can update own profile"   ON public.profiles FOR UPDATE USING (auth.uid() = id);
-CREATE POLICY "Admins can view all profiles"   ON public.profiles FOR SELECT USING (
-  EXISTS (SELECT 1 FROM public.profiles WHERE id = auth.uid() AND role = 'admin')
-);
+
+-- Admin check MUST use a SECURITY DEFINER function. A policy that does
+-- `EXISTS (SELECT 1 FROM profiles WHERE ...)` reads `profiles` again, which
+-- re-evaluates the policy → "infinite recursion detected in policy for
+-- relation profiles" → EVERY read of `profiles` fails (e.g. the AI career
+-- page shows "0 of 3 used" even though the DB has a real value).
+CREATE OR REPLACE FUNCTION public.is_admin()
+RETURNS BOOLEAN
+LANGUAGE sql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+    SELECT EXISTS (
+        SELECT 1 FROM public.profiles
+        WHERE id = auth.uid() AND role = 'admin'
+    );
+$$;
+
+REVOKE ALL ON FUNCTION public.is_admin() FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.is_admin() TO authenticated;
+
+CREATE POLICY "Admins can view all profiles"   ON public.profiles FOR SELECT TO public
+  USING (public.is_admin());
+
+-- Atomic AI-credit increment (avoids the double-click race where two rapid
+-- requests both read 0 and write 1). SECURITY DEFINER bypasses RLS so the
+-- UPDATE works even if the caller lacks an UPDATE policy.
+CREATE OR REPLACE FUNCTION public.increment_ai_credits(target_user UUID)
+RETURNS INTEGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+DECLARE
+    new_value INTEGER;
+BEGIN
+    UPDATE public.profiles
+    SET ai_credits_used = ai_credits_used + 1
+    WHERE id = target_user
+    RETURNING ai_credits_used INTO new_value;
+
+    IF new_value IS NULL THEN
+        RAISE EXCEPTION 'Profiles row not found for %', target_user;
+    END IF;
+
+    RETURN new_value;
+END;
+$$;
+
+REVOKE ALL ON FUNCTION public.increment_ai_credits(target_user UUID) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.increment_ai_credits(target_user UUID) TO authenticated;
 
 
 -- ============================================================
