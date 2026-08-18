@@ -150,14 +150,47 @@ export const POST: APIRoute = async (context) => {
     // 🔁 ATOMIC INCREMENT (also fixes double-click race: both requests
     // would read 0 and write 1; this makes each click persist +1)
     // ============================================================
+    // The preferred path is the SECURITY DEFINER RPC — it is atomic and
+    // immune to the double-click race. However, the RPC relies on the
+    // migration `supabase/migrations/20260817_add_ai_credit_persistence.sql`
+    // having been applied to the database. If it hasn't, PostgREST returns
+    // "Could not find the function public.increment_ai_credits(target_user)
+    // in the schema cache" → so we fall back to a direct UPDATE below.
     const { data: incrementData, error: rpcError } = await supabase.rpc('increment_ai_credits', {
         target_user: user.id,
     })
 
     if (rpcError) {
+        // Fallback: direct UPDATE via the REST API.
+        // NOTE: This is not atomic under a rapid double-click race, but it
+        // keeps the feature working even if the migration hasn't been
+        // applied to the Supabase project yet.
+        const { data: updatedProfile, error: updateError } = await supabase
+            .from('profiles')
+            .update({ ai_credits_used: creditsUsed + 1 })
+            .eq('id', user.id)
+            .select('ai_credits_used')
+            .single()
+
+        if (updateError) {
+            return new Response(
+                JSON.stringify({ error: 'increment_failed', message: updateError.message }),
+                { status: 500, headers: { 'Content-Type': 'application/json' } }
+            )
+        }
+
+        // RLS-silent failure: if UPDATE silently affected 0 rows
+        // (updatedProfile is null), throw a real 500.
+        if (!updatedProfile) {
+            return new Response(
+                JSON.stringify({ error: 'profile_update_failed', message: rpcError.message }),
+                { status: 500, headers: { 'Content-Type': 'application/json' } }
+            )
+        }
+
         return new Response(
-            JSON.stringify({ error: 'increment_failed', message: rpcError.message }),
-            { status: 500, headers: { 'Content-Type': 'application/json' } }
+            JSON.stringify({ analysis: analysisJson, credits_used: updatedProfile.ai_credits_used }),
+            { status: 200, headers: { 'Content-Type': 'application/json' } }
         )
     }
 

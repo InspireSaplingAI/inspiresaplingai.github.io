@@ -11,8 +11,19 @@
 --   2) Adds a SECURITY DEFINER RPC to atomically increment the counter
 
 -- ============================================================
--- 1) Make sure the RLS UPDATE policy exists (idempotent)
+-- 1) Make sure the RLS SELECT + UPDATE policies exist (idempotent)
 -- ============================================================
+-- The SELECT policy is REQUIRED for the dashboard/career pages to read
+-- `ai_credits_used` on page load. Without it, RLS silently blocks the
+-- read, the page shows "0 of 3 used", and the counter only appears to
+-- work right after an analysis (because the API returns the value from
+-- the SECURITY DEFINER RPC, which bypasses RLS).
+DROP POLICY IF EXISTS "Users can view own profile" ON public.profiles;
+CREATE POLICY "Users can view own profile"
+    ON public.profiles
+    FOR SELECT TO authenticated
+    USING (auth.uid() = id);
+
 DROP POLICY IF EXISTS "Users can update own profile" ON public.profiles;
 CREATE POLICY "Users can update own profile"
     ON public.profiles
