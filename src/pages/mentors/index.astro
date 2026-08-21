@@ -1,0 +1,127 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import Navbar from '../../components/Navbar.astro'
+import { createClient } from '../../lib/supabase-server'
+
+export const prerender = false
+
+const supabase = createClient(Astro)
+const { data: { user } } = await supabase.auth.getUser()
+
+// Fetch all approved mentors from Supabase
+const { data: mentors, error } = await supabase
+    .from('mentor_profiles')
+    .select('*')
+    .eq('approved', true)
+    .order('name', { ascending: true })
+
+if (error) {
+    console.error('[mentors/index.astro] Failed to fetch mentors:', error.message)
+}
+
+function formatRate(cents: number | null): string {
+    if (!cents) return 'Rate TBD'
+    return `$${(cents / 100).toFixed(0)}`
+}
+---
+
+<Layout title="Browse Mentors — InspireSaplingAI">
+    <Navbar user={user} />
+    <div class="min-h-screen bg-gray-50 pt-24 pb-12">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+            <!-- Page Header -->
+            <div class="mb-8">
+                <h1 class="text-3xl font-bold text-gray-900">1-on-1 Coaching & Mentorship</h1>
+                <p class="text-gray-500 mt-2">
+                    Connect directly with experienced professionals for personalized career guidance, resume reviews, and technical mock interviews.
+                </p>
+            </div>
+
+            <!-- Pricing Transparency Disclosure -->
+            <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-8 text-center">
+                <p class="text-sm text-amber-800">
+                    💡 <strong>Sessions are fee-based.</strong> Proceeds support mentor stipends and InspireSaplingAI operations.
+                </p>
+            </div>
+
+            <!-- Mentors Grid -->
+            {!mentors || mentors.length === 0 ? (
+                <div class="bg-white rounded-2xl border border-gray-100 p-12 text-center">
+                    <p class="text-4xl mb-3">👥</p>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-1">No Mentors Available</h3>
+                    <p class="text-sm text-gray-500">Please check back soon as our mentor roster is being updated.</p>
+                </div>
+            ) : (
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {mentors.map((mentor) => (
+                        <div class="bg-white rounded-2xl border border-gray-100 shadow-sm p-6 flex flex-col justify-between hover:shadow-md transition-shadow">
+                            <div>
+                                <!-- Mentor Header -->
+                                <div class="flex items-center gap-4 mb-4">
+                                    {mentor.avatar_url ? (
+                                        <img
+                                            src={mentor.avatar_url}
+                                            alt={mentor.name}
+                                            class="w-16 h-16 rounded-full object-cover flex-shrink-0"
+                                        />
+                                    ) : (
+                                        <div class="w-16 h-16 rounded-full bg-primary-100 flex items-center justify-center text-primary-600 text-xl font-bold flex-shrink-0">
+                                            {mentor.name.charAt(0).toUpperCase()}
+                                        </div>
+                                    )}
+                                    <div class="min-w-0 flex-1">
+                                        <h2 class="text-lg font-bold text-gray-900 truncate">{mentor.name}</h2>
+                                        <p class="text-sm text-gray-500 truncate">
+                                            {[mentor.title, mentor.company].filter(Boolean).join(' · ')}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- Bio -->
+                                {mentor.bio && (
+                                    <p class="text-sm text-gray-600 line-clamp-3 mb-4 leading-relaxed">
+                                        {mentor.bio}
+                                    </p>
+                                )}
+
+                                <!-- Expertise Tags -->
+                                {mentor.expertise && mentor.expertise.length > 0 && (
+                                    <div class="flex flex-wrap gap-1.5 mb-6">
+                                        {mentor.expertise.slice(0, 3).map((tag: string) => (
+                                            <span class="px-2.5 py-0.5 text-xs font-medium rounded-full bg-primary-50 text-primary-700">
+                                                {tag}
+                                            </span>
+                                        ))}
+                                        {mentor.expertise.length > 3 && (
+                                            <span class="px-2.5 py-0.5 text-xs font-medium rounded-full bg-gray-100 text-gray-500">
+                                                +{mentor.expertise.length - 3}
+                                            </span>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+
+                            <!-- Footer / Action -->
+                            <div class="pt-4 border-t border-gray-100 flex items-center justify-between mt-auto">
+                                <div>
+                                    <span class="text-xl font-bold text-gray-900">{formatRate(mentor.hourly_rate)}</span>
+                                    <span class="text-xs text-gray-400">/hr</span>
+                                </div>
+                                <a
+                                    href={`/mentors/${mentor.id}`}
+                                    class="inline-flex items-center gap-1 px-4 py-2 rounded-xl bg-primary-600 text-white text-sm font-semibold hover:bg-primary-700 transition-colors"
+                                >
+                                    Book a Session
+                                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+    </div>
+</Layout>

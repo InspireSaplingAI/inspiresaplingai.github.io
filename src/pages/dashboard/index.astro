@@ -8,6 +8,9 @@ export const prerender = false
 const supabase = createClient(Astro)
 const { data: { user } } = await supabase.auth.getUser()
 
+// Check for the "?booked=true" query param set by the Stripe checkout success URL
+const bookedSuccess = new URL(Astro.url).searchParams.get('booked') === 'true'
+
 // Fetch profile data
 const { data: profile, error: profileError } = await supabase
     .from('profiles')
@@ -29,12 +32,34 @@ const { count: upcomingEventCount } = await supabase
     .select('id', { count: 'exact', head: true })
     .eq('user_id', user?.id)
     .eq('status', 'confirmed')
+
+// Count upcoming coaching sessions (pending/paid)
+const { count: upcomingSessionCount } = await supabase
+    .from('coaching_sessions')
+    .select('id', { count: 'exact', head: true })
+    .eq('member_id', user?.id)
+    .in('status', ['pending', 'paid'])
 ---
 
 <Layout title="Dashboard — InspireSaplingAI">
     <Navbar user={user} />
     <div class="min-h-screen bg-gray-50 pt-24 pb-12">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            {bookedSuccess && (
+                <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 mb-6 flex items-start gap-3">
+                    <span class="text-2xl">🎉</span>
+                    <div>
+                        <p class="font-semibold text-emerald-800">Payment successful!</p>
+                        <p class="text-sm text-emerald-700 mt-0.5">
+                            Your coaching session has been booked. View details in{" "}
+                            <a href="/dashboard/coaching" class="underline font-medium hover:text-emerald-900">
+                                My Coaching Sessions
+                            </a>.
+                        </p>
+                    </div>
+                </div>
+            )}
+
             <!-- Welcome Header -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-6">
                 <div class="flex items-center gap-4">
@@ -91,6 +116,21 @@ const { count: upcomingEventCount } = await supabase
                     <a href="/dashboard/career" class="p-4 rounded-xl border border-gray-200 hover:border-primary-300 hover:bg-primary-50 transition-colors">
                         <h3 class="font-medium text-gray-900">AI Career Assistant</h3>
                         <p class="text-sm text-gray-500 mt-1">Analyze your resume & search real jobs</p>
+                    </a>
+                    <a href="/dashboard/coaching" class="p-4 rounded-xl border border-gray-200 hover:border-primary-300 hover:bg-primary-50 transition-colors">
+                        <div class="flex items-center justify-between mb-1">
+                            <h3 class="font-medium text-gray-900">My Coaching Sessions</h3>
+                            {(upcomingSessionCount ?? 0) > 0 && (
+                                <span class="px-2 py-0.5 text-xs font-bold rounded-full bg-primary-100 text-primary-700">
+                                    {upcomingSessionCount}
+                                </span>
+                            )}
+                        </div>
+                        <p class="text-sm text-gray-500">Book and manage 1-on-1 sessions</p>
+                    </a>
+                    <a href="/mentors" class="p-4 rounded-xl border border-gray-200 hover:border-primary-300 hover:bg-primary-50 transition-colors">
+                        <h3 class="font-medium text-gray-900">Browse Mentors</h3>
+                        <p class="text-sm text-gray-500 mt-1">Book a session with an expert coach</p>
                     </a>
                     <a href="/membership" class="p-4 rounded-xl border border-gray-200 hover:border-primary-300 hover:bg-primary-50 transition-colors">
                         <h3 class="font-medium text-gray-900">Membership</h3>
